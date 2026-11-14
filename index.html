@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://api.open-meteo.com">
   <link rel="preconnect" href="https://geocoding-api.open-meteo.com">
   <link rel="preconnect" href="https://router.project-osrm.org">
+  <link rel="preconnect" href="https://api.weather.gov">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
@@ -41,6 +42,7 @@
           <button class="primary-button" type="submit"><span>CHECK ROUTE WEATHER</span><span class="button-arrow">↗</span></button>
         </form>
         <p class="form-note" id="route-message">Enter your start and destination to see conditions along the way.</p>
+        <div class="saved-routes" id="saved-routes" hidden><div class="saved-heading"><span class="eyebrow">SAVED TRIPS</span><button type="button" class="text-button" id="clear-saved">CLEAR ALL</button></div><div id="saved-route-list" class="saved-route-list"></div></div>
       </section>
 
       <section class="overview-grid" aria-label="Current weather">
@@ -67,9 +69,13 @@
           <div><small>DISTANCE</small><strong id="route-distance">--</strong></div><div><small>DRIVE TIME</small><strong id="route-duration">--</strong></div><div><small>CHECKPOINTS</small><strong id="checkpoint-count">--</strong></div>
           <button id="open-maps" class="maps-button">OPEN MAPS <span>↗</span></button>
         </div>
+        <div class="route-tools"><button class="tool-button" id="save-route">＋ SAVE TRIP</button><button class="tool-button" id="refresh-route">↻ REFRESH</button><button class="tool-button" id="wake-lock">◉ KEEP SCREEN ON</button><button class="tool-button" id="share-route">↗ SHARE</button></div>
+        <section class="alerts-panel panel" id="alerts-panel"><div class="alerts-heading"><div><span class="eyebrow">OFFICIAL WEATHER ALERTS</span><h3 id="alerts-title">Checking National Weather Service…</h3></div><span class="alerts-count" id="alerts-count">—</span></div><div id="alerts-list" class="alerts-list"><p class="muted">Checking active alerts along your route.</p></div><p class="source-note">National Weather Service alerts · U.S. locations only</p></section>
         <div class="map-wrap panel"><div id="route-map" role="img" aria-label="Map showing your planned route"></div><div class="map-legend"><span><i class="legend-route"></i> ROUTE</span><span><i class="legend-point"></i> WEATHER CHECKPOINT</span></div></div>
         <div class="section-heading ahead-heading"><div><span class="eyebrow">WEATHER AHEAD</span><h2>Know what's coming.</h2></div><span class="eyebrow" id="route-weather-time">ROUTE FORECAST</span></div>
         <div id="checkpoint-list" class="checkpoint-list"></div>
+        <section class="roads-panel panel"><div class="alerts-heading"><div><span class="eyebrow">OFFICIAL ROAD CONDITIONS</span><h3>Check the state DOT.</h3></div><span class="eyebrow">511 / DOT</span></div><div id="road-links" class="road-links"><p class="muted">State road-condition links appear with your route.</p></div><p class="source-note">Links open official state transportation resources where available. Conditions are not verified inside this app.</p></section>
+        <section class="truck-panel panel"><div class="alerts-heading"><div><span class="eyebrow">YOUR TRUCK</span><h3 id="truck-summary">Truck profile not set</h3></div><button class="text-button" id="edit-truck">EDIT PROFILE</button></div><p class="source-note">Saved profile is for planning context only. This route is not validated for truck dimensions or restrictions.</p></section>
         <p class="safety-note"><strong>Drive smart.</strong> Forecasts are estimates, not verified road restrictions. Always follow posted signs and official state DOT / 511 advisories. Google Maps may not account for truck height, weight, length, or hazmat restrictions.</p>
       </section>
 
@@ -81,7 +87,8 @@
     <footer><span>DUSTIN'S TRUCKING</span><span>BUILT FOR THE LONG HAUL <b>·</b> <span id="footer-year"></span></span></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="settings-dialog" class="settings-dialog"><form method="dialog"><div class="dialog-head"><div><span class="eyebrow">PREFERENCES</span><h2>Road settings</h2></div><button class="icon-button" aria-label="Close">×</button></div><label class="setting-row"><span><strong>Wind warning threshold</strong><small>Flag sustained winds at or above this speed.</small></span><select id="wind-threshold"><option value="20">20 mph</option><option value="25" selected>25 mph</option><option value="30">30 mph</option><option value="35">35 mph</option></select></label><label class="setting-row"><span><strong>Temperature units</strong><small>Choose how temperatures are displayed.</small></span><select id="temp-unit"><option value="fahrenheit" selected>°F</option><option value="celsius">°C</option></select></label><button class="primary-button" id="save-settings" value="save">SAVE SETTINGS <span>↗</span></button></form></dialog>
+  <dialog id="settings-dialog" class="settings-dialog"><form method="dialog"><div class="dialog-head"><div><span class="eyebrow">PREFERENCES</span><h2>Road settings</h2></div><button class="icon-button" aria-label="Close">×</button></div><label class="setting-row"><span><strong>Wind warning threshold</strong><small>Flag sustained winds at or above this speed.</small></span><select id="wind-threshold"><option value="20">20 mph</option><option value="25" selected>25 mph</option><option value="30">30 mph</option><option value="35">35 mph</option></select></label><label class="setting-row"><span><strong>Temperature units</strong><small>Choose how temperatures are displayed.</small></span><select id="temp-unit"><option value="fahrenheit" selected>°F</option><option value="celsius">°C</option></select></label><label class="setting-row"><span><strong>Planning speed</strong><small>Average moving speed for checkpoint timing.</small></span><select id="planning-speed"><option value="50">50 mph</option><option value="55" selected>55 mph</option><option value="60">60 mph</option><option value="65">65 mph</option></select></label><div class="dialog-actions"><button class="secondary-button" id="edit-truck-settings" type="button">TRUCK PROFILE</button><button class="primary-button" id="save-settings" value="save">SAVE SETTINGS <span>↗</span></button></div></form></dialog>
+  <dialog id="truck-dialog" class="settings-dialog"><form method="dialog"><div class="dialog-head"><div><span class="eyebrow">TRUCK PROFILE</span><h2>Set up your rig.</h2></div><button class="icon-button" aria-label="Close">×</button></div><p class="dialog-help">These details are saved on this device for reference. They are not sent to routing services and do not make the route truck-safe.</p><label class="truck-field">Truck / trailer length (ft)<input id="truck-length" type="number" min="0" max="120" step="1" placeholder="e.g. 70"></label><label class="truck-field">Overall height (ft)<input id="truck-height" type="number" min="0" max="25" step=".1" placeholder="e.g. 13.5"></label><label class="truck-field">Gross vehicle weight (lb)<input id="truck-weight" type="number" min="0" max="150000" step="500" placeholder="e.g. 80000"></label><button class="primary-button" id="save-truck" value="save">SAVE TRUCK PROFILE <span>↗</span></button></form></dialog>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="./app.js"></script>
 </body>
