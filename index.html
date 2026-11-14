@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0e11">
+  <meta name="description" content="A personal weather and route companion for Dustin.">
+  <title>Dustin's Trucking</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://api.open-meteo.com">
+  <link rel="preconnect" href="https://geocoding-api.open-meteo.com">
+  <link rel="preconnect" href="https://router.project-osrm.org">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Dustin's Trucking home">
+        <span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 20.5h16.2V8H3v12.5Zm16.2-8.8h5.1l4 4.4v4.4h-9.1v-8.8Z"/><circle cx="9" cy="22.8" r="3"/><circle cx="24" cy="22.8" r="3"/></svg></span>
+        <span><strong>DUSTIN'S</strong><small>TRUCKING</small></span>
+      </a>
+      <div class="topbar-right"><span class="live-dot"></span><span id="connection-label">WEATHER READY</span><button class="icon-button" id="settings-button" aria-label="Settings">⋯</button></div>
+    </header>
+
+    <main>
+      <section class="welcome-row">
+        <div><p class="eyebrow">YOUR ROAD. YOUR WEATHER.</p><h1>Stay ahead<br>of the <em>weather.</em></h1></div>
+        <div class="date-chip"><span class="date-icon">◷</span><span id="today-label">YOUR DRIVE</span></div>
+      </section>
+
+      <section class="route-card panel">
+        <div class="section-heading"><div><span class="eyebrow">ROUTE PLANNER</span><h2>Where to next?</h2></div><span class="route-status"><i></i> READY WHEN YOU ARE</span></div>
+        <form id="route-form" class="route-form">
+          <div class="route-fields">
+            <label class="route-input"><span class="field-marker origin-marker"></span><span class="field-copy"><small>STARTING POINT</small><input id="origin-input" autocomplete="off" placeholder="Current location or city" required></span><button type="button" class="locate-button" id="use-location" aria-label="Use current location">◎</button></label>
+            <div class="route-connector"></div>
+            <label class="route-input"><span class="field-marker destination-marker"></span><span class="field-copy"><small>DESTINATION</small><input id="destination-input" autocomplete="off" placeholder="Where are you headed?" required></span></label>
+          </div>
+          <button class="primary-button" type="submit"><span>CHECK ROUTE WEATHER</span><span class="button-arrow">↗</span></button>
+        </form>
+        <p class="form-note" id="route-message">Enter your start and destination to see conditions along the way.</p>
+      </section>
+
+      <section class="overview-grid" aria-label="Current weather">
+        <article class="weather-now panel">
+          <div class="card-topline"><span class="eyebrow">LOCAL CONDITIONS</span><span class="tiny-live"><i></i> LIVE FORECAST</span></div>
+          <div class="current-weather"><div><div class="temperature" id="current-temp">--<sup>°</sup></div><div class="condition" id="current-condition">Waiting for location</div></div><div class="weather-symbol" id="weather-symbol">◌</div></div>
+          <div class="weather-location" id="weather-location">Set your starting point</div>
+          <div class="weather-metrics">
+            <div><span class="metric-icon">↗</span><span class="metric-label">WIND</span><strong id="current-wind">-- mph</strong></div>
+            <div><span class="metric-icon">◉</span><span class="metric-label">GUSTS</span><strong id="current-gust">-- mph</strong></div>
+            <div><span class="metric-icon">⌁</span><span class="metric-label">VISIBILITY</span><strong id="current-visibility">-- mi</strong></div>
+          </div>
+        </article>
+        <article class="risk-card panel" id="risk-card">
+          <div class="card-topline"><span class="eyebrow">DRIVING CONDITIONS</span><span class="risk-indicator" id="risk-indicator">STANDBY</span></div>
+          <div class="risk-main"><span class="risk-icon" id="risk-icon">◈</span><div><h3 id="risk-title">Your road outlook</h3><p id="risk-description">Weather risks will appear here when a route is checked.</p></div></div>
+          <div class="risk-footer"><span>WIND · PRECIPITATION · TEMPERATURE</span><span class="risk-pulse"></span></div>
+        </article>
+      </section>
+
+      <section class="route-results" id="route-results" hidden>
+        <div class="section-heading results-heading"><div><span class="eyebrow">YOUR ROUTE</span><h2 id="route-title">Route overview</h2><p id="route-subtitle" class="muted">Weather checkpoints along your drive</p></div><button class="text-button" id="clear-route">CLEAR ×</button></div>
+        <div class="route-stats panel">
+          <div><small>DISTANCE</small><strong id="route-distance">--</strong></div><div><small>DRIVE TIME</small><strong id="route-duration">--</strong></div><div><small>CHECKPOINTS</small><strong id="checkpoint-count">--</strong></div>
+          <button id="open-maps" class="maps-button">OPEN MAPS <span>↗</span></button>
+        </div>
+        <div class="map-wrap panel"><div id="route-map" role="img" aria-label="Map showing your planned route"></div><div class="map-legend"><span><i class="legend-route"></i> ROUTE</span><span><i class="legend-point"></i> WEATHER CHECKPOINT</span></div></div>
+        <div class="section-heading ahead-heading"><div><span class="eyebrow">WEATHER AHEAD</span><h2>Know what's coming.</h2></div><span class="eyebrow" id="route-weather-time">ROUTE FORECAST</span></div>
+        <div id="checkpoint-list" class="checkpoint-list"></div>
+        <p class="safety-note"><strong>Drive smart.</strong> Forecasts are estimates, not verified road restrictions. Always follow posted signs and official state DOT / 511 advisories. Google Maps may not account for truck height, weight, length, or hazmat restrictions.</p>
+      </section>
+
+      <section class="empty-state panel" id="empty-state">
+        <div class="empty-road"><span>01</span><div class="road-line"></div><span>02</span></div>
+        <p class="eyebrow">BUILT FOR THE LONG HAUL</p><h2>The road doesn't<br>surprise you twice.</h2><p>Get a look at the weather ahead before it gets to you. Plan the route, check the conditions, and keep moving with confidence.</p>
+      </section>
+    </main>
+    <footer><span>DUSTIN'S TRUCKING</span><span>BUILT FOR THE LONG HAUL <b>·</b> <span id="footer-year"></span></span></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="settings-dialog" class="settings-dialog"><form method="dialog"><div class="dialog-head"><div><span class="eyebrow">PREFERENCES</span><h2>Road settings</h2></div><button class="icon-button" aria-label="Close">×</button></div><label class="setting-row"><span><strong>Wind warning threshold</strong><small>Flag sustained winds at or above this speed.</small></span><select id="wind-threshold"><option value="20">20 mph</option><option value="25" selected>25 mph</option><option value="30">30 mph</option><option value="35">35 mph</option></select></label><label class="setting-row"><span><strong>Temperature units</strong><small>Choose how temperatures are displayed.</small></span><select id="temp-unit"><option value="fahrenheit" selected>°F</option><option value="celsius">°C</option></select></label><button class="primary-button" id="save-settings" value="save">SAVE SETTINGS <span>↗</span></button></form></dialog>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="./app.js"></script>
+</body>
+</html>
