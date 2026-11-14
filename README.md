@@ -1,41 +1,29 @@
 # Dustin's Trucking
 
-A private, mobile-first route weather companion designed around Dustin's long-haul driving workflow.
+A personal, mobile-first route weather companion for Dustin.
 
 ## Run locally
-Serve this folder over HTTP (geolocation and service workers require HTTPS or localhost):
+Serve over HTTPS or localhost (location and service workers require a secure context). For local testing: `python3 -m http.server 8000`, then open `http://localhost:8000`.
 
-```bash
-python3 -m http.server 8000
-```
-
-Open `http://localhost:8000`.
-
-## First build
-- Dark, driver-focused responsive interface.
-- Origin and destination geocoding.
-- Driving route geometry and distance / duration through the public OSRM demo routing endpoint.
-- Weather checkpoints distributed along the route.
-- Current and estimated arrival-time weather using Open-Meteo.
-- Wind, gust, visibility, precipitation, temperature and condition-based risk flags.
-- Google Maps handoff for navigation.
+## Features
+- Dark, responsive mobile dashboard with larger touch targets and safe-area spacing.
+- Origin / destination search, route map, distance and a planning-time estimate based on the configurable average speed.
+- Open-Meteo weather checkpoints with up to 16 days of hourly forecast data.
+- National Weather Service active alerts queried at sampled route points (U.S. only).
+- Elevation samples to identify high terrain along sampled route points.
+- State DOT / 511 links for identified states along the route.
+- Saved trips, wind threshold, temperature units, planning speed, truck profile, share, refresh, and optional screen wake lock. Preferences are stored locally on the device.
 - Installable PWA shell and basic offline caching.
 
-## Data services and limitations
-- **Open-Meteo** supplies forecasts and geocoding. Review its current terms and usage requirements before broader or commercial deployment.
-- **OSRM demo server** is a public demonstration service, not a production SLA. For sustained use, select a hosted routing provider or self-host.
-- **OpenStreetMap** data is displayed through the community tile service. Follow its tile usage policy; the public tile server is not an unlimited production CDN.
-- **Google Maps** handoff uses ordinary car navigation. It does not verify truck height, weight, length, axle, or hazmat restrictions.
-- Weather risk flags are heuristic estimates, not official road-condition reports. They do not establish whether a road is open or safe for a specific truck.
-- The initial forecast request covers up to two forecast days. Longer trips need a follow-up forecast-window implementation before their full journey can be assessed.
-- Always follow posted restrictions and official state DOT / 511 advisories.
+## Services and safety limits
+- Open-Meteo provides forecasts, geocoding and elevation. Review its current terms and usage limits.
+- NWS alerts are queried for sampled points only; this may miss alerts elsewhere in an alert polygon or between samples.
+- OSRM public demo routing is not a production service. OpenStreetMap community tiles have usage policies.
+- The route is an ordinary car-driving route, not a truck route. Google Maps handoff is not height, weight, length, axle or hazmat validated.
+- Elevation samples identify terrain only; they do not identify named mountain passes, chain-control status or road closures.
+- State DOT / 511 links are shortcuts to official resources, not a live road-condition integration.
+- Forecasts are limited to the service's returned 16-day window. Trips arriving beyond it show forecast data as unavailable rather than extrapolating.
+- Weather risk levels are heuristic indicators, not safety determinations. Check official DOT / 511 advisories, posted signs and dispatch guidance.
 
 ## Deployment
-This is a static site and can be hosted on GitHub Pages or another static HTTPS host. A GitHub Actions Pages workflow is included; enable Pages in repository settings with GitHub Actions as the deployment source. Do not add API keys or private driver data to this repository.
-
-## Next build priorities
-1. Add official NWS alerts and state DOT / 511 links for route states.
-2. Add elevation and mountain-pass awareness.
-3. Extend forecast retrieval for multi-day routes and improve arrival-time interpolation.
-4. Add a truck profile and verified truck-routing integration before presenting any route as truck-safe.
-5. Add forecast refresh controls, data timestamps, and resilient offline trip summaries.
+Static HTTPS hosting such as GitHub Pages. Enable repository Pages with GitHub Actions as the deployment source. Do not commit API secrets or private driver information.
