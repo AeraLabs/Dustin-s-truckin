@@ -35,9 +35,9 @@
         <div class="section-heading"><div><span class="eyebrow">ROUTE PLANNER</span><h2>Where to next?</h2></div><span class="route-status"><i></i> READY WHEN YOU ARE</span></div>
         <form id="route-form" class="route-form">
           <div class="route-fields">
-            <label class="route-input"><span class="field-marker origin-marker"></span><span class="field-copy"><small>STARTING POINT</small><input id="origin-input" autocomplete="off" placeholder="Current location or city" required></span><button type="button" class="locate-button" id="use-location" aria-label="Use current location">◎</button></label>
+            <label class="route-input"><span class="field-marker origin-marker"></span><span class="field-copy"><small>STARTING POINT</small><input id="origin-input" list="origin-suggestions" autocomplete="off" placeholder="City, state or ZIP code" required><datalist id="origin-suggestions"></datalist></span><button type="button" class="locate-button" id="use-location" aria-label="Use current location">◎</button></label>
             <div class="route-connector"></div>
-            <label class="route-input"><span class="field-marker destination-marker"></span><span class="field-copy"><small>DESTINATION</small><input id="destination-input" autocomplete="off" placeholder="Where are you headed?" required></span></label>
+            <label class="route-input"><span class="field-marker destination-marker"></span><span class="field-copy"><small>DESTINATION</small><input id="destination-input" list="destination-suggestions" autocomplete="off" placeholder="City, state or ZIP code" required><datalist id="destination-suggestions"></datalist></span></label>
           </div>
           <button class="primary-button" type="submit"><span>CHECK ROUTE WEATHER</span><span class="button-arrow">↗</span></button>
         </form>
