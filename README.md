@@ -30,3 +30,9 @@ Serve over HTTPS or localhost (location and service workers require a secure con
 
 ## Deployment
 Static HTTPS hosting such as GitHub Pages. Enable repository Pages with GitHub Actions as the deployment source. Do not commit API secrets or private driver information.
+
+
+### Interactive map coverage
+- The map is edge-to-edge and near full-screen on phones, with a larger desktop viewport.
+- At zoom level 10 and closer, it loads OpenStreetMap road geometries for the visible map area from public Overpass endpoints. Visible mapped roads can be tapped to identify the road and inspect point weather and active NWS alerts.
+- Road-network geometry is map data, not a live traffic feed. Official 511 incident data remains directly integrated for Alaska, Arizona, Georgia, Idaho, Louisiana, Nevada and Wisconsin when the user supplies each state's developer key. Other states currently provide their official 511/DOT map link; they do not yet have direct incident-feed coverage in this app.
