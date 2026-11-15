@@ -26,6 +26,8 @@
     </header>
 
     <main>
+      <div class="map-wrap panel"><div id="route-map" role="img" aria-label="Map showing your planned route"></div><div class="map-legend"><span><i class="legend-route"></i> CLEAR</span><span><i class="legend-caution"></i> CAUTION</span><span><i class="legend-danger"></i> HIGH RISK</span><span><i class="legend-point"></i> CHECKPOINT</span></div></div>
+
       <section class="welcome-row">
         <div><p class="eyebrow">YOUR ROAD. YOUR WEATHER.</p><h1>Stay ahead<br>of the <em>weather.</em></h1></div>
         <div class="date-chip"><span class="date-icon">◷</span><span id="today-label">YOUR DRIVE</span></div>
@@ -70,9 +72,10 @@
           <button id="open-maps" class="maps-button">OPEN MAPS <span>↗</span></button>
         </div>
         <div class="route-tools"><button class="tool-button" id="save-route">＋ SAVE TRIP</button><button class="tool-button" id="refresh-route">↻ REFRESH</button><button class="tool-button" id="wake-lock">◉ KEEP SCREEN ON</button><button class="tool-button" id="share-route">↗ SHARE</button></div>
+        <section class="state-conditions panel" id="state-conditions"><div class="alerts-heading"><div><span class="eyebrow">STATE-BY-STATE OUTLOOK</span><h3>Conditions along your route</h3></div><span class="eyebrow">SELECT A STATE TO ZOOM</span></div><div id="state-condition-list" class="state-condition-list"><p class="muted">State weather summaries appear after a route is checked.</p></div></section>
         <section class="alerts-panel panel" id="alerts-panel"><div class="alerts-heading"><div><span class="eyebrow">OFFICIAL WEATHER ALERTS</span><h3 id="alerts-title">Checking National Weather Service…</h3></div><span class="alerts-count" id="alerts-count">—</span></div><div id="alerts-list" class="alerts-list"><p class="muted">Checking active alerts along your route.</p></div><p class="source-note">National Weather Service alerts · U.S. locations only</p></section>
         <section class="elevation-panel panel"><div class="alerts-heading"><div><span class="eyebrow">ELEVATION AHEAD</span><h3>High terrain checkpoints</h3></div><span class="eyebrow">TERRAIN ONLY</span></div><div id="elevation-summary"><p class="muted">Elevation samples will appear with your route.</p></div><p class="source-note">Elevation data does not confirm named pass conditions, chain laws or road restrictions.</p></section>
-        <div class="map-wrap panel"><div id="route-map" role="img" aria-label="Map showing your planned route"></div><div class="map-legend"><span><i class="legend-route"></i> ROUTE</span><span><i class="legend-point"></i> WEATHER CHECKPOINT</span></div></div>
+        
         <div class="section-heading ahead-heading"><div><span class="eyebrow">WEATHER AHEAD</span><h2>Know what's coming.</h2></div><span class="eyebrow" id="route-weather-time">ROUTE FORECAST</span></div>
         <div id="checkpoint-list" class="checkpoint-list"></div>
         <section class="roads-panel panel"><div class="alerts-heading"><div><span class="eyebrow">OFFICIAL ROAD CONDITIONS</span><h3>Check the state DOT.</h3></div><span class="eyebrow">511 / DOT</span></div><div id="road-links" class="road-links"><p class="muted">State road-condition links appear with your route.</p></div><p class="source-note">Links open official state transportation resources where available. Conditions are not verified inside this app.</p></section>
