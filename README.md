@@ -33,6 +33,7 @@ Static HTTPS hosting such as GitHub Pages. Enable repository Pages with GitHub A
 
 
 ### Interactive map coverage
-- The map is edge-to-edge and near full-screen on phones, with a larger desktop viewport.
-- At zoom level 10 and closer, it loads OpenStreetMap road geometries for the visible map area from public Overpass endpoints. Visible mapped roads can be tapped to identify the road and inspect point weather and active NWS alerts.
+- The map is the primary screen, edge-to-edge and near full-screen on phones, with a larger desktop viewport. Route planning is optional; drivers can explore roads without entering a trip.
+- At zoom level 10 and closer, visible roads are colored using nearby current weather samples (lower weather risk / caution / high weather risk). These are weather estimates, not observed pavement conditions or verified traffic speeds. Tap a road to inspect point weather, NWS alerts and available state 511 incident data.
+- At zoom level 10 and closer, it loads OpenStreetMap road geometries for the visible map area from public Overpass endpoints. Visible mapped roads are colored using five nearby weather samples and can be tapped to identify the road and inspect point weather and active NWS alerts.
 - Road-network geometry is map data, not a live traffic feed. Official 511 incident data remains directly integrated for Alaska, Arizona, Georgia, Idaho, Louisiana, Nevada and Wisconsin when the user supplies each state's developer key. Other states currently provide their official 511/DOT map link; they do not yet have direct incident-feed coverage in this app.
