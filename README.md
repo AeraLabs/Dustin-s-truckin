@@ -11,7 +11,9 @@ Serve over HTTPS or localhost (location and service workers require a secure con
 - Open-Meteo weather checkpoints with up to 16 days of hourly forecast data.
 - National Weather Service active alerts queried at sampled route points (U.S. only).
 - Elevation samples to identify high terrain along sampled route points.
-- State DOT / 511 links for identified states along the route.
+- State-by-state weather summaries and state DOT / 511 links for identified states along the route.
+- Route segments are color-coded from forecast-derived weather risk (lower risk / caution / high risk); colors are not official pavement-condition reports.
+- Requests up to three route alternatives when the public routing service returns them.
 - Saved trips, wind threshold, temperature units, planning speed, truck profile, share, refresh, and optional screen wake lock. Preferences are stored locally on the device.
 - Installable PWA shell and basic offline caching.
 
