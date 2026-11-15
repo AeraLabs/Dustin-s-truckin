@@ -34,7 +34,7 @@ Static HTTPS hosting such as GitHub Pages. Enable repository Pages with GitHub A
 
 ### Interactive map coverage
 - The map is the primary screen, edge-to-edge and near full-screen on phones, with a larger desktop viewport. Route planning is optional; drivers can explore roads without entering a trip.
-- At zoom level 10 and closer, visible roads are colored using nearby current weather samples (lower weather risk / caution / high weather risk). These are weather estimates, not observed pavement conditions or verified traffic speeds. Tap a road to inspect point weather, NWS alerts and available state 511 incident data.
+- At zoom level 9 and closer, visible roads are colored using nearby current weather samples (lower weather risk / caution / high weather risk). These are weather estimates, not observed pavement conditions or verified traffic speeds. Tap a road to inspect point weather, NWS alerts and available state 511 incident data.
 - The road map uses CARTO's OpenStreetMap-based raster tiles. Selecting a state zooms to its boundary immediately; roads render progressively as map tiles arrive, and additional local streets appear as the driver zooms in. This avoids downloading and drawing an entire state's road geometry from Overpass before the map becomes usable. Tile detail and coverage depend on the underlying OpenStreetMap data and zoom level.
 - Statewide weather sampling uses up to 25 in-state points from Open-Meteo. Weather sample markers show forecast-derived risk; they are not pavement sensing or live traffic speeds.
 - Statewide active National Weather Service alerts are queried by state and their available alert polygons are drawn over the map. Clicking a road also checks point-specific NWS alerts and current weather.
