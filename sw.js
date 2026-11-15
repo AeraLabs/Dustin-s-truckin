@@ -5,7 +5,7 @@ self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys
 self.addEventListener("fetch",event=>{
  const request=event.request,url=new URL(request.url);
  if(request.method!=="GET"||url.origin!==location.origin)return;
- const refresh=request.mode==="navigate"||/\\/(app\\.js|index\\.html|styles\\.css)$/.test(url.pathname);
+ const refresh=request.mode==="navigate"||["/app.js","/index.html","/styles.css"].some(path=>url.pathname.endsWith(path));
  event.respondWith((async()=>{
   if(refresh){
    try{const response=await fetch(request,{cache:"no-store"});if(response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy))}return response}catch{return (await caches.match(request))||(await caches.match("./index.html"))}
