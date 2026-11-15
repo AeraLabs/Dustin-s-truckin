@@ -49,6 +49,9 @@
 @media(max-width:640px){.state-map-wrap #route-map{height:390px;min-height:330px}.state-map-toolbar{align-items:center}.state-live-stats{gap:7px}.state-live-stats>div{padding:10px 8px}.state-live-stats strong{font-size:17px}.state-live-stats small{font-size:8px}.state-data-grid{grid-template-columns:1fr}.state-overview{padding:16px}}
 .state-overview-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.state-overview-actions .text-button{white-space:nowrap}
 
+/* Keep the national-map prompt out of the center of the road network. */
+.map-hint{top:auto;bottom:58px;left:14px;transform:none;max-width:min(520px,calc(100% - 28px));text-align:left}
+@media(max-width:720px){.map-hint{bottom:48px;left:10px;max-width:calc(100% - 20px);font-size:8px}}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
