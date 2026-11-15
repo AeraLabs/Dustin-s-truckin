@@ -63,19 +63,19 @@
     </header>
 
     <main>
-      <div class="map-wrap panel state-map-wrap">
-        <div class="map-live-label">U.S. STATE ROAD CONDITIONS <span>· SELECT A STATE</span></div>
+      <div class="map-wrap panel">
+        <div class="map-live-label">UNITED STATES ROAD NETWORK <span>· LIVE CONDITIONS LAYERS</span></div>
         <div class="state-map-toolbar">
-          <label class="state-picker"><span>STATE</span><select id="state-select" aria-label="Choose a state"><option value="">Loading states…</option></select></label>
-          <button type="button" class="map-locate" id="state-back">ALL STATES</button>
+          <label class="state-picker"><span>JUMP TO STATE CONDITIONS</span><select id="state-select" aria-label="Jump to a state and load its conditions"><option value="">Loading states…</option></select></label>
+          <button type="button" class="map-locate" id="state-back">U.S. VIEW</button>
         </div>
-        <div id="route-map" role="application" aria-label="Map of U.S. states. Select a state to view its roads, weather and active alerts."><div id="map-hint" class="map-hint visible">LOADING U.S. ROAD MAP…</div></div>
-        <div class="map-map-count" id="map-road-count">LOADING STATE BOUNDARIES…</div>
-        <div class="map-legend"><span><i class="legend-route"></i> WEATHER SAMPLE</span><span><i class="legend-caution"></i> CAUTION SAMPLE</span><span><i class="legend-danger"></i> HIGH-RISK SAMPLE</span><span><i class="legend-point"></i> 511 EVENT</span></div>
+        <div id="route-map" role="application" aria-label="Interactive full United States road map. Pan and zoom to explore roads; select a state to load its weather and active alerts."><div id="map-hint" class="map-hint visible">LOADING U.S. ROAD MAP…</div></div>
+        <div class="map-map-count" id="map-road-count">LOADING U.S. ROAD NETWORK…</div>
+        <div class="map-legend"><span><i class="legend-route"></i> LOWER WEATHER RISK</span><span><i class="legend-caution"></i> WEATHER CAUTION</span><span><i class="legend-danger"></i> HIGH WEATHER RISK</span><span><i class="legend-point"></i> 511 EVENT</span></div>
       </div>
       <section class="state-overview panel" id="state-overview" hidden>
         <div class="alerts-heading"><div><span class="eyebrow">SELECTED STATE · LIVE DATA</span><h3 id="state-overview-title">State conditions</h3><p class="muted" id="state-overview-subtitle">Select a state to load its latest available data.</p></div><div class="state-overview-actions"><button type="button" class="text-button" id="manage-state-keys">MANAGE 511 KEYS</button><a class="text-button" id="state-dot-link" href="#" target="_blank" rel="noopener">OPEN OFFICIAL 511 ↗</a></div></div>
-        <div class="state-live-stats"><div><small>ROAD MAP</small><strong id="state-road-count">—</strong></div><div><small>ACTIVE NWS ALERTS</small><strong id="state-alert-count">—</strong></div><div><small>511 EVENTS</small><strong id="state-event-count">—</strong></div></div>
+        <div class="state-live-stats"><div><small>MAP STATUS</small><strong id="state-road-count">—</strong></div><div><small>ACTIVE NWS ALERTS</small><strong id="state-alert-count">—</strong></div><div><small>511 EVENTS</small><strong id="state-event-count">—</strong></div></div>
         <div class="state-data-grid"><div><h4>ACTIVE WEATHER ALERTS</h4><div id="state-alerts"><p class="muted">Waiting for state selection.</p></div></div><div><h4>LIVE 511 TRAFFIC EVENTS</h4><div id="state-incidents"><p class="muted">Waiting for state selection.</p></div></div></div>
         <p class="source-note" id="state-data-note">Mapped public drivable roads are shown from OpenStreetMap. Weather colors are forecast-based estimates, not live traffic speeds or verified pavement conditions. Live 511 traffic events require a supported state feed and developer key; statewide NWS alerts are shown separately.</p>
       </section>
