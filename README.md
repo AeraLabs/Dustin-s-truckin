@@ -23,7 +23,8 @@ Serve over HTTPS or localhost (location and service workers require a secure con
 - OSRM public demo routing is not a production service. OpenStreetMap community tiles have usage policies.
 - The route is an ordinary car-driving route, not a truck route. Google Maps handoff is not height, weight, length, axle or hazmat validated.
 - Elevation samples identify terrain only; they do not identify named mountain passes, chain-control status or road closures.
-- State DOT / 511 links are shortcuts to official resources, not a live road-condition integration.
+- Direct state 511 event integrations are available for Alaska, Arizona, Georgia, Idaho, Louisiana, Nevada and Wisconsin. These official feeds return crashes/incidents, roadwork and closures where published; each state requires its own developer key. Keys are stored in browser local storage and are not sent to this repository.
+- Other state DOT / 511 links remain official shortcuts, not live road-condition integrations in this build. A national third-party normalizer exists, but it requires a separate provider key and commercial terms; it is not silently enabled.
 - Forecasts are limited to the service's returned 16-day window. Trips arriving beyond it show forecast data as unavailable rather than extrapolating.
 - Weather risk levels are heuristic indicators, not safety determinations. Check official DOT / 511 advisories, posted signs and dispatch guidance.
 
