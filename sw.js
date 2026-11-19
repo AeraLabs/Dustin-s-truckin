@@ -1,5 +1,5 @@
-const CACHE="dustins-trucking-v26";
-const CORE=["./","./index.html","./styles.css?v=13","./app.js?v=23","./map-first.css?v=2","./map-first.js?v=2","./road-ease.css?v=1","./road-ease.js?v=2","./road-focus.css?v=2","./road-focus.js?v=2","./manifest.webmanifest","./icon.svg"];
+const CACHE="dustins-trucking-v27";
+const CORE=["./","./index.html","./styles.css?v=13","./app.js?v=24","./map-first.css?v=2","./map-first.js?v=2","./road-ease.css?v=1","./road-ease.js?v=2","./road-focus.css?v=2","./road-focus.js?v=2","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));self.skipWaiting()});
 self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim()});
 self.addEventListener("fetch",event=>{
