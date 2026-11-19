@@ -60,7 +60,7 @@
 @media(max-width:720px){.map-overlay-stack{right:8px;bottom:46px;width:min(360px,calc(100% - 16px))}.map-overlay-stack>.map-overlay-panel{padding:10px 11px;max-height:27vh}.map-overlay-stack .state-data-grid{grid-template-columns:1fr 1fr}.map-overlay-stack .state-live-stats strong{font-size:12px}.map-overlay-stack .road-inspector{max-height:34vh}}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="./map-first.css?v=1">
+<link rel="stylesheet" href="./map-first.css?v=2">
 </head>
 <body>
   <div class="app-shell">
@@ -160,6 +160,6 @@
   <dialog id="truck-dialog" class="settings-dialog"><form method="dialog"><div class="dialog-head"><div><span class="eyebrow">TRUCK PROFILE</span><h2>Set up your rig.</h2></div><button class="icon-button" aria-label="Close">×</button></div><p class="dialog-help">These details are saved on this device for reference. They are not sent to routing services and do not make the route truck-safe.</p><label class="truck-field">Truck / trailer length (ft)<input id="truck-length" type="number" min="0" max="120" step="1" placeholder="e.g. 70"></label><label class="truck-field">Overall height (ft)<input id="truck-height" type="number" min="0" max="25" step=".1" placeholder="e.g. 13.5"></label><label class="truck-field">Gross vehicle weight (lb)<input id="truck-weight" type="number" min="0" max="150000" step="500" placeholder="e.g. 80000"></label><button class="primary-button" id="save-truck" value="save">SAVE TRUCK PROFILE <span>↗</span></button></form></dialog>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="./app.js?v=22"></script>
-  <script src="./map-first.js?v=1"></script>
+  <script src="./map-first.js?v=2"></script>
 </body>
 </html>
