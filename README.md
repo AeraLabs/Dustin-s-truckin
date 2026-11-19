@@ -48,3 +48,13 @@ Static HTTPS hosting such as GitHub Pages. Enable repository Pages with GitHub A
 - Map route alternatives still come from the public OSRM **car** routing service. They are **not height, weight, bridge, hazmat, or truck-entrance verified** and must not be used as truck-safe turn-by-turn navigation.
 - Traffic cameras, shared driver reports, verified fuel prices, real-time truck parking counts, and truck-safe commercial navigation are **not integrated**. Their presence in a reference screenshot should not be interpreted as available functionality in Dustin's app.
 - The new `map-first.css` and `map-first.js` complement the existing static GitHub Pages implementation. If you update either asset, bump its query version in `index.html` and the offline cache in `sw.js`.
+
+## Roadside usability (November 2026)
+- **Check here** inspects the map center with available forecast, NWS and optionally configured 511 data. It does not establish verified pavement conditions or truck restrictions.
+- **Last trip** pre-fills the latest saved trip. It does not reroute automatically; check the weather again before departure.
+- **Large controls** are enabled by default, with larger tap targets, higher legibility and a saved on/off preference.
+- **Compact trip summary** keeps basic risk, distance and ETA estimates visible on the map with a Compare routes shortcut.
+- **Optional pre-trip audio briefing** reads an existing route-weather summary in browsers with speech synthesis. Playback is manually started and is not hands-free navigation.
+- **Dismissible panels** clear the map after inspecting state and local road data.
+- Prepare and review a route while safely parked; the app is not meant to be interacted with while a vehicle is moving. Weather and alerts can be stale, partial or unavailable.
+- road-ease.js and road-ease.css extend the existing app; bump versioned assets in index.html and sw.js after future changes.
