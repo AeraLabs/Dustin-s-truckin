@@ -1,0 +1,95 @@
+/* Map-first driver cockpit, layered after the existing styles. */
+body.map-first{background:#091014}
+body.map-first .app-shell{max-width:1480px}
+body.map-first .map-wrap{height:calc(100dvh - 103px);min-height:560px;margin:0 0 18px;border-radius:16px;overflow:hidden}
+body.map-first .map-wrap #route-map{height:100%;min-height:0;max-height:none}
+body.map-first .map-wrap .map-legend{position:absolute;z-index:610;left:0;right:0;bottom:0;height:40px;background:rgba(12,20,24,.96);backdrop-filter:blur(12px);border-top:1px solid #405357;gap:18px}
+body.map-first .map-live-label,body.map-first .map-hint{display:none!important}
+body.map-first .map-map-count{top:auto;bottom:204px;left:15px;right:auto;max-width:48%;font:9px var(--mono);z-index:610;background:#0d171be9}
+body.map-first .state-map-toolbar{position:absolute;z-index:640;top:77px;right:14px;width:190px;padding:9px;display:flex;align-items:stretch;flex-direction:column;border:1px solid #40565e;border-radius:13px;background:rgba(12,22,27,.95);box-shadow:0 8px 30px #0007}
+body.map-first .state-map-toolbar .state-picker span{font-size:8px}
+body.map-first .state-picker select{max-width:none;font-size:12px;padding:9px}
+body.map-first .state-map-toolbar .map-locate{position:static;min-height:34px}
+body.map-first .map-overlay-stack{bottom:212px;right:14px;z-index:630;width:min(370px,calc(100% - 28px))}
+body.map-first .map-overlay-stack>.map-overlay-panel{max-height:32vh;padding:12px 13px}
+body.map-first .map-overlay-stack>.road-inspector{max-height:42vh}
+body.map-first .leaflet-top.leaflet-left{top:135px}
+body.map-first .leaflet-control-zoom{border:none;box-shadow:0 6px 24px #0006}
+body.map-first .leaflet-control-zoom a{width:39px;height:39px;line-height:39px;font-size:23px}
+body.map-first .truck-map-tiles{filter:grayscale(.3) invert(1) hue-rotate(170deg) brightness(.91) contrast(1.08)}
+body.map-first .leaflet-control-attribution{font-size:9px!important}
+.cockpit-tabs{position:absolute;top:13px;left:14px;right:14px;z-index:650;display:flex;gap:3px;width:max-content;max-width:calc(100% - 28px);padding:5px;border:1px solid #52666c;border-radius:16px;background:rgba(12,22,29,.95);box-shadow:0 9px 28px #0008;overflow-x:auto;scrollbar-width:none}
+.cockpit-tabs::-webkit-scrollbar{display:none}
+.cockpit-tab{display:flex;gap:7px;align-items:center;justify-content:center;border:0;border-radius:11px;padding:11px 13px;white-space:nowrap;color:#ccd9db;background:transparent;font-size:12px;font-weight:700;min-height:43px}
+.cockpit-tab[aria-pressed="true"]{background:#b8d7d2;color:#0c1c24}
+.cockpit-tab:focus-visible,.quick-category:focus-visible,.map-search-action:focus-visible{outline:3px solid #7abfe8;outline-offset:2px}
+.cockpit-gps{position:absolute;right:14px;top:195px;z-index:645;width:46px;height:46px;border:1px solid #52676d;border-radius:13px;background:#111d22ee;color:#dceceb;font-size:24px;box-shadow:0 7px 24px #0008}
+.map-dock{position:absolute;z-index:660;bottom:48px;left:14px;right:14px;max-width:670px;padding:12px;border:1px solid #52666c;border-radius:19px;background:rgba(13,23,28,.96);backdrop-filter:blur(18px);box-shadow:0 15px 45px #0009}
+.map-search-form{display:flex;gap:9px;align-items:center;height:48px;padding:0 7px 0 13px;border:1px solid #547078;border-radius:12px;background:#f1f5f4;color:#17232c}
+.map-search-form .search-glass{font-size:21px;color:#276c85}
+.map-search-form input{min-width:0;flex:1;height:100%;border:0;outline:0;background:transparent;color:#12242c;font-size:14px}
+.map-search-form input::placeholder{color:#5f737b}
+.map-search-action{border:0;border-radius:9px;background:#0867d8;color:white;min-width:78px;height:36px;font-weight:800;font-size:12px}
+.map-quick-row{display:flex;gap:7px;overflow-x:auto;padding-top:11px;scrollbar-width:thin}
+.quick-category{white-space:nowrap;min-height:41px;display:flex;align-items:center;gap:7px;border:1px solid #3d5960;border-radius:10px;background:#192b32;color:#e3eff0;padding:0 11px;font-size:11px;font-weight:700}
+.quick-category[aria-pressed="true"]{background:#187da0;border-color:#7fb3ca;color:white}
+.quick-category span{font-size:17px}
+.map-place-result{display:flex;gap:9px;align-items:center;justify-content:space-between;padding:9px 3px 1px;font-size:11px;color:#dcebe8}
+.map-place-result button{background:#b8d7d2;color:#0c1d20;border:0;border-radius:8px;min-height:34px;padding:0 12px;font-weight:800}
+.map-poi-status{padding:8px 4px 0;color:#b9cdd2;font-size:10px;line-height:1.5}
+.map-poi-status[hidden],.map-place-result[hidden]{display:none!important}
+.map-sheet{position:absolute;z-index:820;bottom:48px;left:14px;right:14px;width:min(620px,calc(100% - 28px));max-height:min(76vh,760px);overflow-y:auto;overscroll-behavior:contain;border:1px solid #52656c;border-radius:19px;background:#101b20f7;backdrop-filter:blur(20px);box-shadow:0 18px 60px #000b}
+.map-sheet[hidden]{display:none!important}
+.map-sheet-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid #365056;background:#142329}
+.map-sheet-head strong{font-size:14px}
+.map-sheet-head button{border:1px solid #51636a;border-radius:9px;background:#23383e;color:white;width:38px;height:36px;font-size:20px}
+.map-sheet .route-card{border:0;border-radius:0;background:transparent;box-shadow:none;padding:14px}
+.map-sheet .route-form{grid-template-columns:1fr;margin-top:12px}
+.map-sheet .route-fields{grid-template-columns:1fr}
+.map-sheet .route-input{min-height:57px}
+.map-sheet .route-results{margin:0;padding:14px;border-top:1px solid #34454b}
+.map-sheet .route-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.map-sheet .route-stats>div{border-right:0}
+.map-sheet .maps-button{grid-column:1/-1}
+.map-sheet .state-conditions,.map-sheet .alerts-panel,.map-sheet .elevation-panel,.map-sheet .roads-panel,.map-sheet .truck-panel{margin:12px 0}
+.map-sheet .section-heading h2{font-size:18px}
+.map-sheet .route-choice{min-height:54px}
+.map-dock.is-hidden{display:none!important}
+.map-poi-pin{display:grid;place-items:center;width:37px;height:37px;border:2px solid #e6f2f1;border-radius:13px;background:#137e9b;color:white;font-weight:900;font-size:20px;box-shadow:0 3px 15px #0009}
+.map-search-pin{display:grid;place-items:center;width:36px;height:36px;border:2px solid #f4ffff;border-radius:50% 50% 50% 5px;transform:rotate(-45deg);background:#0a74d9;color:white;box-shadow:0 3px 16px #000a}
+.map-search-pin span{transform:rotate(45deg)}
+body.map-first .welcome-row,body.map-first .overview-grid,body.map-first .empty-state,body.map-first footer{display:none!important}
+body.map-first .app-shell>main>.route-card,body.map-first .app-shell>main>.route-results{display:none}
+.map-attribution-note{font-size:9px;color:#91adb3;margin-top:8px;line-height:1.45}
+@media(max-width:720px){
+ body.map-first{overflow:hidden}
+ body.map-first .app-shell{padding:0!important}
+ body.map-first .topbar{height:58px;padding:0 13px;border:0}
+ body.map-first .topbar-right #connection-label{display:none}
+ body.map-first .topbar-right .live-dot{margin-right:2px}
+ body.map-first .map-wrap{width:100%;margin:0;height:calc(100dvh - 58px - env(safe-area-inset-bottom));min-height:0;border-radius:0;border:0}
+ body.map-first .map-wrap #route-map{height:100%;min-height:0}
+ .cockpit-tabs{left:9px;right:9px;top:10px;padding:4px;max-width:calc(100% - 18px)}
+ .cockpit-tab{padding:8px 10px;font-size:11px;min-height:41px}
+ body.map-first .state-map-toolbar{top:67px;right:9px;width:152px;padding:7px;border-radius:12px}
+ body.map-first .state-picker select{font-size:11px;padding:7px}
+ body.map-first .state-map-toolbar .state-picker span{font-size:7px}
+ .cockpit-gps{right:9px;top:180px;width:44px;height:44px}
+ body.map-first .leaflet-top.leaflet-left{top:146px}
+ body.map-first .map-wrap .map-legend{height:35px;gap:12px;font-size:7px}
+ body.map-first .map-map-count{bottom:186px;left:9px;max-width:calc(100% - 85px);font-size:7px;pointer-events:none}
+ .map-dock{left:8px;right:8px;bottom:40px;padding:9px;border-radius:16px;max-width:none}
+ .map-search-form{height:45px}
+ .map-search-form input{font-size:12px}
+ .map-search-action{min-width:70px;height:35px;font-size:11px}
+ .map-quick-row{gap:6px;padding-top:9px}
+ .quick-category{padding:0 9px;font-size:10px;min-height:37px}
+ .map-sheet{left:8px;right:8px;width:auto;bottom:39px;max-height:calc(100% - 100px)}
+ body.map-first .map-overlay-stack{bottom:188px;right:9px;width:calc(100% - 18px);max-width:420px}
+ body.map-first .map-overlay-stack>.map-overlay-panel{max-height:24vh}
+ body.map-first .map-overlay-stack>.road-inspector{max-height:32vh}
+ .map-sheet .route-fields{gap:8px}
+ .map-sheet .route-tools{display:grid}
+}
+@media(max-width:380px){.cockpit-tab{padding:8px;font-size:10px}.quick-category{font-size:9px}.state-map-toolbar{width:140px}}
+@media(prefers-reduced-motion:reduce){.map-sheet,.map-dock{transition:none!important}}
