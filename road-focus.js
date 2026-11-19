@@ -4,7 +4,7 @@
 "use strict";
 const $f=id=>document.getElementById(id);
 const KEY="dustins-road-point-cache-v1";
-let lastRequest=0,previewLine=null,indicator=null;
+let lastRequest=0,previewLine=null,indicator=null,altLine=null,previewIndex=null;
 const readCache=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch{return{}}};
 const formatTime=t=>{const d=new Date(t);return Number.isFinite(d.getTime())?d.toLocaleString([],{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"unknown date"};
 const html=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&quot;"}[c]));
@@ -41,7 +41,7 @@ function setCard({name,subtitle,tag,tagType,weather,alerts,events,source,details
  const compare=$f("focus-compare");
  compare.textContent=state.route&&choices.length>1?"Compare "+choices.length+" routes":state.route?"Review trip":"Plan a trip";
 }
-function closeCard(){lastRequest++;$f("road-focus-card").hidden=true;if(indicator&&state.map){state.map.removeLayer(indicator);indicator=null}}
+function closeCard(){lastRequest++;previewIndex=null;$f("road-focus-card").hidden=true;if(indicator&&state.map){state.map.removeLayer(indicator);indicator=null}if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null}}
 function cachedWeather(item){
  if(!item)return"";
  return [item.temperature!=null?item.temperature+"°F":null,item.condition,item.wind!=null?"Wind "+item.wind+" mph":null,item.gust!=null?"Gust "+item.gust+" mph":null].filter(Boolean).join(" · ");
@@ -58,6 +58,7 @@ function cachedPoint(point,record){
  link:record.dotUrl?{url:record.dotUrl,text:"Official state 511"}:null});
 }
 async function inspect(latlng,road={}){
+ previewIndex=null;
  if(!latlng||!Number.isFinite(latlng.lat)||!Number.isFinite(latlng.lng))return;
  const point={lat:+latlng.lat,lon:+latlng.lng},token=++lastRequest;
  if(state.map&&window.L){
@@ -173,7 +174,29 @@ function showSaved(trip){
   source:"Saved "+age+" · offline data",
   details:(snap.description||"No archived forecast description.")+" This route is not verified for commercial-truck restrictions. Refresh online before departure."});
 }
+function previewAlternative(index){
+ const routes=state.routeChoices||[],choice=routes[index];
+ if(!choice?.geometry?.coordinates?.length||!state.map||!window.L)return;
+ previewIndex=index;
+ if(altLine)state.map.removeLayer(altLine);
+ altLine=L.polyline(choice.geometry.coordinates.map(c=>[c[1],c[0]]),{color:"#53b9ff",weight:7,dashArray:"10 7",opacity:.95}).addTo(state.map);
+ state.map.fitBounds(altLine.getBounds(),{padding:[45,45]});
+ const current=state.route?.rt;
+ const miles=Math.round(choice.distance/1609.34);
+ const difference=current?Math.round((choice.distance-current.distance)/1609.34):0;
+ setCard({name:"Route "+(index+1)+" preview",subtitle:"ALTERNATIVE · NOT CHECKED FOR TRUCK RESTRICTIONS",
+  tag:"GEOMETRY PREVIEW ONLY",tagType:"cached",
+  weather:miles+" miles · "+(difference===0?"similar length":(difference>0?"+":"")+difference+" miles vs current route"),
+  alerts:"Weather and NWS alerts for this alternative require a new check.",
+  events:"511 closures and truck clearance are not verified for this route.",
+  source:"Public car-routing data · preview, not a safe-route recommendation",
+  details:"Use Check alternative weather to update forecast checkpoints before departure."});
+ $f("focus-compare").textContent="Check alternative weather";
+ $f("map-sheet")?.setAttribute("hidden","");
+ $f("map-dock")?.classList.remove("is-hidden");
+}
 function compare(){
+ if(previewIndex!==null){state.preferredRouteIndex=previewIndex;previewIndex=null;const form=$f("route-form");form?.requestSubmit();const button=document.querySelector('.cockpit-tab[data-mode="trips"]');button?.click();$f("road-focus-card").hidden=true;return}
  $f("road-focus-card").hidden=true;
  const button=document.querySelector('.cockpit-tab[data-mode="trips"]');
  button?.click();
@@ -221,6 +244,6 @@ function setup(){
  document.addEventListener("keydown",e=>{if(e.key==="Escape"){toolsToggle(false);closeCard()}});
  if(state.map)state.map.on("click",()=>{if(!drawer.hidden)toolsToggle(false)});
 }
-window.dustinRoadFocus={inspect,showSaved};
+window.dustinRoadFocus={inspect,showSaved,previewAlternative};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup);else setup();
 })();
