@@ -58,3 +58,15 @@ Static HTTPS hosting such as GitHub Pages. Enable repository Pages with GitHub A
 - **Dismissible panels** clear the map after inspecting state and local road data.
 - Prepare and review a route while safely parked; the app is not meant to be interacted with while a vehicle is moving. Weather and alerts can be stale, partial or unavailable.
 - road-ease.js and road-ease.css extend the existing app; bump versioned assets in index.html and sw.js after future changes.
+
+## Simplified road-tap experience (November 2026)
+- Default map controls are reduced to search, Saved Trip, More and the locate button. States, location filters, route planner, weather controls and optional map overlays are still available inside More.
+- Tap an area of the map to open a compact card. Weather (Open-Meteo), active NWS alerts and supported official state 511 event checks resolve independently, so one slow feed does not hold up the others. The display is **nearby point weather**, not a sensor reading from that road surface.
+- Clickable OSM road geometry with its mapped name can be loaded as an **optional** weather-colored overlay from More when zoomed in. This is a weather heuristic and may fail when the Overpass service is busy. Map taps still work with the overlay disabled.
+- A map location at a broad zoom is not a particular roadway; zoom closer and inspect more precisely. No tap proves a road is passable, free of closures, or safe for truck height, axle, weight or hazmat.
+- Route alternatives (when returned by public car routing) can be displayed in the Trips drawer and previewed on the map without a new weather request. A separate explicit action checks weather for the alternative; this does not validate commercial-truck restrictions.
+- The app remembers its last map center and zoom on the device.
+- Saving a trip now stores an approximate downsampled route line, distance, estimated time, last checked date, weather-risk summary and sampled NWS alert-count summary in localStorage. Saved Trip can display these **without network access**. Older saved trips have endpoints only and cannot show a historical route.
+- A saved trip panel always identifies itself as **CACHED — NOT LIVE** and warns that prior conditions and road events may be outdated. Cached snapshots never mean a road is clear. Cached data does **not** include a full 511 event set.
+- Tap checks retain a bounded local cache of recent weather points for offline review. Browser storage clearing removes those snapshots. The core PWA shell is cached, but an offline background map is not guaranteed: external map tiles and Leaflet libraries are subject to browser caching and provider policies. There is no map-area predownload.
+- The map and lookup interface is intended for pre-trip planning and safely parked checks, not operating the app while moving.
