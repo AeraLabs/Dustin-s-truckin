@@ -93,3 +93,11 @@ body.map-first .app-shell>main>.route-card,body.map-first .app-shell>main>.route
 }
 @media(max-width:380px){.cockpit-tab{padding:8px;font-size:10px}.quick-category{font-size:9px}.state-map-toolbar{width:140px}}
 @media(prefers-reduced-motion:reduce){.map-sheet,.map-dock{transition:none!important}}
+
+/* Always-visible trip summary after a successful route calculation. */
+.map-route-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;padding:9px 11px;border:1px solid #52798d;border-radius:11px;background:#12344a;color:#e8f7fb}
+.map-route-banner[hidden]{display:none!important}
+.map-route-banner span{font-size:11px;font-weight:750}
+.map-route-banner button{border:0;border-radius:8px;background:#0874df;color:white;font-size:11px;font-weight:800;min-height:34px;padding:0 12px}
+.map-sheet:has(.route-results:not([hidden])){max-height:min(58vh,590px)}
+@media(max-width:720px){.map-sheet:has(.route-results:not([hidden])){max-height:54vh}}
