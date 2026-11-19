@@ -87,3 +87,18 @@ body.road-focus .road-comfort .road-focus-card{font-size:16px}
  body.road-focus .leaflet-control-zoom{display:none}
 }
 @media(max-width:380px){.focus-card-actions button,.focus-card-actions a{font-size:11px}.road-focus-card{max-height:45vh}.road-focus-actions button{font-size:11px}}
+
+/* Optional layers only appear inside More. */
+.focus-road-colors{display:block;width:100%;min-height:48px;padding:10px 12px;border:1px solid #6a9ba7;border-radius:11px;background:#243d48;color:#ecf8f9;font-size:13px;font-weight:750;text-align:left}
+.focus-road-colors[aria-pressed="true"]{background:#174f66;border-color:#8acbde}
+.focus-overlay-note{font-size:10px;color:#b7cbd0;line-height:1.5;margin:7px 1px 10px}
+body.road-focus:has(#map-route-banner:not([hidden])) .road-focus-card,
+body.road-focus:has(#map-place-result:not([hidden])) .road-focus-card{bottom:190px}
+body.road-focus:has(#map-route-banner:not([hidden])) .road-tools-drawer,
+body.road-focus:has(#map-place-result:not([hidden])) .road-tools-drawer{bottom:190px}
+@media(max-width:720px){
+ body.road-focus:has(#map-route-banner:not([hidden])) .road-focus-card,
+ body.road-focus:has(#map-place-result:not([hidden])) .road-focus-card{bottom:176px;max-height:43vh}
+ body.road-focus:has(#map-route-banner:not([hidden])) .road-tools-drawer,
+ body.road-focus:has(#map-place-result:not([hidden])) .road-tools-drawer{bottom:176px}
+}
