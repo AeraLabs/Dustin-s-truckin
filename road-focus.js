@@ -64,76 +64,91 @@ async function inspect(latlng,road={}){
   if(indicator)state.map.removeLayer(indicator);
   indicator=L.circleMarker([point.lat,point.lon],{radius:9,weight:3,color:"#fff",fillColor:"#117fe4",fillOpacity:1,interactive:false}).addTo(state.map);
  }
- $f("road-inspector").hidden=true;
- $f("state-overview").hidden=true;
+ $f("road-inspector").hidden=true;$f("state-overview").hidden=true;
  const coarse=state.map?.getZoom()<10;
- const title=road.name||"Selected map location";
- const detail=coarse?"Zoom closer for a specific road. Weather is sampled near this point.":"Nearby weather, not measured pavement conditions.";
- setCard({name:title,subtitle:point.lat.toFixed(3)+", "+point.lon.toFixed(3),tag:"CHECKING DATA",tagType:"loading",
-  weather:"Checking nearby weather…",alerts:"NWS alerts: checking…",events:"511 events: checking coverage…",
-  source:"Point weather · NWS · optional state 511",details:detail});
+ const detail=coarse?"Zoom closer to select a specific road.":"This is nearby weather, not measured pavement conditions.";
  const old=readCache()[cacheKey(point)];
- if(old){cachedPoint(point,old);if(navigator.onLine)$f("focus-details").textContent="Showing saved data while refreshing. "+detail}
- if(!navigator.onLine){if(!old)setCard({name:title,subtitle:"OFFLINE — no snapshot for this point",tag:"UNAVAILABLE",tagType:"unavailable",weather:"No current data offline",alerts:"NWS alerts unavailable offline",events:"511 events unavailable offline",source:"No verified road conditions",details:"Saved trips are available using the Saved button."});return}
- // All requests are independent and update the same panel as each returns.
- let latest={name:road.name||old?.name||title,temperature:null,condition:null,wind:null,gust:null,
- alerts:"NWS alerts: checking…",events:"511 feed: checking…",dotUrl:""};
- const samples=await Promise.allSettled([
-  requestJson("https://api.open-meteo.com/v1/forecast?"+new URLSearchParams({latitude:point.lat,longitude:point.lon,current:"temperature_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,visibility",wind_speed_unit:"kmh",timezone:"auto"}),9000),
-  requestJson("https://api.weather.gov/alerts/active?point="+point.lat+","+point.lon,8500,{Accept:"application/geo+json"}),
-  reverse(point.lat,point.lon)
- ]);
- if(token!==lastRequest)return;
- const [weather,alerts,place]=samples;
- const inferredState=state.stateFeatures?.find(f=>pointInState([point.lon,point.lat],f))?.properties?.name;
- const placeData=place.status==="fulfilled"?place.value:null;
- const region=inferredState||stateFor(placeData?.region)||placeData?.region||"";
- const dot=roads[region];
- latest.dotUrl=dot?.[1]||"";
- if(!road.name&&placeData?.name&&placeData.name!=="Current location")latest.name=placeData.name;
- const time=new Date().toISOString();
- const goodWeather=weather.status==="fulfilled"&&weather.value?.current;
- let itemRisk=null;
- if(goodWeather){
-  const c=weather.value.current;
-  itemRisk=assess(c);
-  latest.temperature=Math.round(c.temperature_2m*9/5+32);
-  latest.condition=label(c.weather_code);
-  latest.wind=mph(c.wind_speed_10m);
-  latest.gust=mph(c.wind_gusts_10m);
-  latest.weather="Weather "+latest.temperature+"°F · "+latest.condition+" · wind "+latest.wind+" mph · gusts "+latest.gust+" mph"+(Number.isFinite(c.visibility)?" · visibility "+(c.visibility/1609.34).toFixed(1)+" mi":"");
- }else{
-  latest.weather=old?"Weather refresh failed; last saved: "+cachedWeather(old):"Nearby weather unavailable";
+ let title=road.name||"Selected map location";
+ let region=state.stateFeatures?.find(f=>pointInState([point.lon,point.lat],f))?.properties?.name||"";
+ let dot=roads[region];
+ let wxText="Checking nearby weather…",alertsText="NWS alerts: checking…",eventsText="511 coverage: checking…";
+ let riskType="loading",riskLabel="CHECKING",wxChecked=false,wxTime="";
+ let temperature=null,condition=null,wind=null,gust=null;
+ if(old){cachedPoint(point,old);if(navigator.onLine)$f("focus-details").textContent="Showing a dated snapshot while checking for updated information. "+detail}
+ else setCard({name:title,subtitle:point.lat.toFixed(3)+", "+point.lon.toFixed(3),tag:"CHECKING DATA",tagType:"loading",
+   weather:wxText,alerts:alertsText,events:eventsText,source:"Nearby point forecast · NWS · official 511 if configured",details:detail});
+ if(!navigator.onLine){
+  if(!old)setCard({name:title,subtitle:"OFFLINE — no snapshot for this point",tag:"UNAVAILABLE",tagType:"unavailable",
+   weather:"No nearby weather stored",alerts:"NWS unavailable offline",events:"511 unavailable offline",
+   source:"No fresh observations",details:"Open Saved Trip to review locally saved routes and their last check times."});
+  return;
  }
- const alertOk=alerts.status==="fulfilled"&&Array.isArray(alerts.value?.features);
- const alertItems=alertOk?alerts.value.features.map(f=>f.properties).filter(Boolean):[];
- latest.alerts=alertOk?(alertItems.length?"NWS: "+alertItems.slice(0,3).map(a=>a.event||"Weather alert").join("; "):"NWS: 0 active alerts returned for this point"):"NWS: service unavailable";
- const configured=region&&native511[region]&&(state.incidentKeys[native511[region].code]||(native511[region].code==="ID"&&state.incidentKey));
- latest.events=!region?"511: state not identified":!native511[region]?"511: official feed not integrated":!configured?"511: not connected for "+region:"511: checking nearby events…";
- let level=itemRisk?.cls==="danger"?"HIGH WEATHER RISK":itemRisk?.cls==="caution"?"WEATHER CAUTION":goodWeather?"LOWER WEATHER RISK":"WEATHER UNKNOWN";
- const kind=itemRisk?.cls==="danger"?"danger":itemRisk?.cls==="caution"?"caution":goodWeather?"ok":"unavailable";
- const statusText=()=>goodWeather?"UPDATED "+formatTime(time):"DATA NOT CURRENT";
- function render(){
-  setCard({name:latest.name,subtitle:(road.name?"Mapped road geometry · ":"Near selected point · ")+region+" · "+point.lat.toFixed(3)+", "+point.lon.toFixed(3),
-   tag:level,tagType:kind,weather:latest.weather,alerts:latest.alerts,events:latest.events,
-   source:"Nearby weather "+statusText()+" · road surface unverified",
-   details:detail+" Official 511 reports are shown only when a supported feed is configured. An empty alert check is not proof the road is safe.",
-   link:dot?{url:dot[1],text:dot[0]+" official map"}:null});
+ function redraw(){
+  if(token!==lastRequest)return;
+  setCard({name:title,subtitle:(road.name?"Mapped road · ":"Selected area · ")+(region||"state unknown")+" · "+point.lat.toFixed(3)+", "+point.lon.toFixed(3),
+   tag:riskLabel,tagType:riskType,weather:wxText,alerts:alertsText,events:eventsText,
+   source:wxChecked?"WEATHER UPDATED "+formatTime(wxTime)+" · road surface unverified":"Weather refresh pending or unavailable",
+   details:detail+" Check posted signs and official road reports; no data here confirms a route is truck-safe.",
+   link:dot?{url:dot[1],text:dot[0]+" map"}:null});
  }
- render();
- // Persist only successfully retrieved weather; preserve saved point snapshots when refresh fails.
- if(goodWeather)storePoint(point,{...latest,checkedAt:time});
- if(configured){
+ function persist(){
+  if(!wxChecked)return;
+  storePoint(point,{name:title,temperature,condition,wind,gust,alerts:alertsText,events:eventsText,dotUrl:dot?.[1]||"",checkedAt:wxTime});
+ }
+ // Three independent network lookups: render each as soon as it completes.
+ const weatherPromise=requestJson("https://api.open-meteo.com/v1/forecast?"+new URLSearchParams({
+  latitude:point.lat,longitude:point.lon,
+  current:"temperature_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,visibility",
+  wind_speed_unit:"kmh",timezone:"auto"
+ }),8500).then(data=>{
+  if(token!==lastRequest)return;
+  const c=data.current;if(!c)throw Error("No current weather data");
+  const r=assess(c);riskType=r.cls==="danger"?"danger":r.cls==="caution"?"caution":"ok";
+  riskLabel=r.cls==="danger"?"HIGH WEATHER RISK":r.cls==="caution"?"WEATHER CAUTION":"LOWER WEATHER RISK";
+  temperature=Math.round(c.temperature_2m*9/5+32);condition=label(c.weather_code);
+  wind=mph(c.wind_speed_10m);gust=mph(c.wind_gusts_10m);
+  wxText=temperature+"°F · "+condition+" · wind "+wind+" mph · gusts "+gust+" mph"+
+    (Number.isFinite(c.visibility)?" · visibility "+(c.visibility/1609.34).toFixed(1)+" mi":"");
+  wxChecked=true;wxTime=new Date().toISOString();redraw();persist();
+ }).catch(error=>{
+  if(token!==lastRequest)return;
+  riskType=old?"cached":"unavailable";riskLabel=old?"CACHED — NOT LIVE":"WEATHER UNAVAILABLE";
+  wxText=old?cachedWeather(old):"Weather request failed";
+  redraw();
+ });
+ const alertsPromise=requestJson("https://api.weather.gov/alerts/active?point="+point.lat+","+point.lon,8500,{Accept:"application/geo+json"}).then(data=>{
+  if(token!==lastRequest)return;
+  if(!Array.isArray(data.features))throw Error("Invalid alert response");
+  const list=data.features.map(f=>f.properties).filter(Boolean);
+  alertsText=list.length?"NWS: "+list.slice(0,3).map(a=>a.event||"Weather alert").join("; "):"NWS: 0 active alerts returned for this point";
+  redraw();persist();
+ }).catch(()=>{
+  if(token!==lastRequest)return;
+  alertsText="NWS: service unavailable";redraw();persist();
+ });
+ const placePromise=reverse(point.lat,point.lon).then(async place=>{
+  if(token!==lastRequest)return;
+  if(!region)region=stateFor(place.region)||place.region||"";
+  if(!road.name&&place.name&&place.name!=="Current location")title=place.name;
+  dot=roads[region];redraw();persist();
+  const api=native511[region],key=api&&(state.incidentKeys[api.code]||(api.code==="ID"?state.incidentKey:""));
+  if(!api){eventsText=region?"511: official feed not integrated":"511: state not identified";redraw();persist();return}
+  if(!key){eventsText="511: official feed not connected for "+region;redraw();persist();return}
+  eventsText="511: checking nearby reported events…";redraw();
   try{
    const data=await stateIncidents(region,point);
    if(token!==lastRequest)return;
    const events=data.events||[];
-   latest.events=events.length?"511: "+events.length+" event(s) within 5 mi — "+events.slice(0,2).map(e=>e.EventType||e.Description||"Reported event").join("; "):"511: 0 nearby events returned (coverage may be incomplete)";
-  }catch(e){latest.events="511: official feed unavailable"}
+   eventsText=events.length?"511: "+events.length+" event(s) within 5 miles — "+events.slice(0,2).map(e=>e.EventType||e.Description||"Road event").join("; "):"511: 0 nearby events returned; coverage may be incomplete";
+  }catch{
+   if(token!==lastRequest)return;eventsText="511: official feed unavailable";
+  }
+  redraw();persist();
+ }).catch(()=>{
   if(token!==lastRequest)return;
-  render();
-  if(goodWeather)storePoint(point,{...latest,checkedAt:time});
- }
+  eventsText="511: state lookup unavailable";redraw();persist();
+ });
+ await Promise.allSettled([weatherPromise,alertsPromise,placePromise]);
 }
 function showSaved(trip){
  if(!trip?.a?.name||!trip?.b?.name)return;
