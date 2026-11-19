@@ -1,5 +1,5 @@
-const CACHE="dustins-trucking-v22";
-const CORE=["./","./index.html","./styles.css?v=13","./app.js?v=22","./map-first.css?v=1","./map-first.js?v=1","./manifest.webmanifest","./icon.svg"];
+const CACHE="dustins-trucking-v23";
+const CORE=["./","./index.html","./styles.css?v=13","./app.js?v=22","./map-first.css?v=2","./map-first.js?v=2","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));self.skipWaiting()});
 self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim()});
 self.addEventListener("fetch",event=>{
