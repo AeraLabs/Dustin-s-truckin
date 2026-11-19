@@ -157,7 +157,7 @@ function showSaved(trip){
  toolsToggle(false);
  if($f("map-sheet"))$f("map-sheet").hidden=true;
  $f("map-dock")?.classList.remove("is-hidden");
- if(state.route&&(state.route.a?.name!==trip?.a?.name||state.route.b?.name!==trip?.b?.name)){state.route=null;state.routeChoices=[];$f("route-results").hidden=true;}
+ state.route=null;state.routeChoices=[];$f("route-results").hidden=true;if($f("map-route-banner"))$f("map-route-banner").hidden=true;if(state.layer&&state.map){state.map.removeLayer(state.layer);state.layer=null}state.markers.forEach(m=>state.map?.removeLayer(m));state.markers=[];
  if(indicator&&state.map){state.map.removeLayer(indicator);indicator=null}
  if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null}
  if(!trip?.a?.name||!trip?.b?.name)return;
