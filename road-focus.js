@@ -8,7 +8,7 @@ let lastRequest=0,previewLine=null,indicator=null,altLine=null,previewIndex=null
 const readCache=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch{return{}}};
 const formatTime=t=>{const d=new Date(t);return Number.isFinite(d.getTime())?d.toLocaleString([],{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"unknown date"};
 const html=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&quot;"}[c]));
-function cacheKey(point){return point.lat.toFixed(2)+":"+point.lon.toFixed(2)}
+function cacheKey(point){return point.lat.toFixed(3)+":"+point.lon.toFixed(3)}
 function storePoint(point,item){
  try{
   const cache=readCache();cache[cacheKey(point)]={...item,checkedAt:new Date().toISOString()};
@@ -59,6 +59,7 @@ function cachedPoint(point,record){
 }
 async function inspect(latlng,road={}){
  previewIndex=null;
+ if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null;}
  if(!latlng||!Number.isFinite(latlng.lat)||!Number.isFinite(latlng.lng))return;
  const point={lat:+latlng.lat,lon:+latlng.lng},token=++lastRequest;
  if(state.map&&window.L){
@@ -152,6 +153,9 @@ async function inspect(latlng,road={}){
  await Promise.allSettled([weatherPromise,alertsPromise,placePromise]);
 }
 function showSaved(trip){
+ lastRequest++;previewIndex=null;
+ if(indicator&&state.map){state.map.removeLayer(indicator);indicator=null}
+ if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null}
  if(!trip?.a?.name||!trip?.b?.name)return;
  const snap=trip.snapshot;
  $f("origin-input").value=trip.a.name;
@@ -175,6 +179,7 @@ function showSaved(trip){
   details:(snap.description||"No archived forecast description.")+" This route is not verified for commercial-truck restrictions. Refresh online before departure."});
 }
 function previewAlternative(index){
+ lastRequest++;
  const routes=state.routeChoices||[],choice=routes[index];
  if(!choice?.geometry?.coordinates?.length||!state.map||!window.L)return;
  previewIndex=index;
@@ -196,7 +201,7 @@ function previewAlternative(index){
  $f("map-dock")?.classList.remove("is-hidden");
 }
 function compare(){
- if(previewIndex!==null){state.preferredRouteIndex=previewIndex;previewIndex=null;const form=$f("route-form");form?.requestSubmit();const button=document.querySelector('.cockpit-tab[data-mode="trips"]');button?.click();$f("road-focus-card").hidden=true;return}
+ if(previewIndex!==null){state.preferredRouteIndex=previewIndex;previewIndex=null;if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null}const form=$f("route-form");form?.requestSubmit();const button=document.querySelector('.cockpit-tab[data-mode="trips"]');button?.click();$f("road-focus-card").hidden=true;return}
  $f("road-focus-card").hidden=true;
  const button=document.querySelector('.cockpit-tab[data-mode="trips"]');
  button?.click();
@@ -223,7 +228,7 @@ function setup(){
  controls.innerHTML='<button id="focus-saved" type="button">↶ Saved trip</button><button id="focus-tools" type="button" aria-expanded="false" aria-controls="road-tools-drawer">⚙ More</button>';
  dock.appendChild(controls);
  const drawer=document.createElement("section");drawer.id="road-tools-drawer";drawer.className="road-tools-drawer";drawer.hidden=true;
- drawer.innerHTML='<div class="road-drawer-heading"><strong>Map tools</strong><button type="button" id="focus-close-tools" aria-label="Close map tools">×</button></div>';
+ drawer.innerHTML='<div class="road-drawer-heading"><strong>Map tools</strong><button type="button" id="focus-close-tools" aria-label="Close map tools">×</button></div><button type="button" id="focus-road-colors" class="focus-road-colors" aria-pressed="false">Weather-color road overlay: Off</button><p class="focus-overlay-note">Optional nearby road geometry. Colors are weather estimates, not DOT pavement reports. Loading may take longer.</p>';
  map.appendChild(drawer);
  for(const selector of [".cockpit-tabs",".state-map-toolbar",".map-quick-row",".road-ease-actions","#map-poi-status","#road-ease-message"]){
   const element=map.querySelector(selector);if(element)drawer.appendChild(element);
@@ -239,10 +244,15 @@ function setup(){
  };
  $f("focus-tools").onclick=()=>toolsToggle();
  $f("focus-close-tools").onclick=()=>toolsToggle(false);
+ $f("focus-road-colors").onclick=()=>{state.enableRoadDetails=!state.enableRoadDetails;const on=state.enableRoadDetails;$f("focus-road-colors").setAttribute("aria-pressed",String(on));$f("focus-road-colors").textContent="Weather-color road overlay: "+(on?"On":"Off");if(!on)state.roadNetworkLayer?.clearLayers();else scheduleRoadNetworkLoad();if(on&&state.map?.getZoom()<11)toast("Zoom into a roadway to load weather-colored road segments.");};
  drawer.querySelectorAll(".cockpit-tab").forEach(btn=>btn.addEventListener("click",()=>toolsToggle(false)));
  $f("map-search-form")?.addEventListener("submit",()=>toolsToggle(false));
  document.addEventListener("keydown",e=>{if(e.key==="Escape"){toolsToggle(false);closeCard()}});
- if(state.map)state.map.on("click",()=>{if(!drawer.hidden)toolsToggle(false)});
+ if(state.map){
+  try{const view=JSON.parse(localStorage.getItem("dustins-map-last-view-v1")||"null");if(view&&Number.isFinite(view.lat)&&Number.isFinite(view.lon)&&Number.isFinite(view.zoom)&&view.zoom>=3&&view.zoom<=18)state.map.setView([view.lat,view.lon],view.zoom,{animate:false})}catch{}
+  state.map.on("moveend",()=>{try{const c=state.map.getCenter();localStorage.setItem("dustins-map-last-view-v1",JSON.stringify({lat:+c.lat.toFixed(5),lon:+c.lng.toFixed(5),zoom:state.map.getZoom()}))}catch{}});
+  state.map.on("click",()=>{if(!drawer.hidden)toolsToggle(false)});
+ }
 }
 window.dustinRoadFocus={inspect,showSaved,previewAlternative};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup);else setup();
