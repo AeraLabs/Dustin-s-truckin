@@ -132,7 +132,7 @@ function buildCockpit(){
  tabs.setAttribute("aria-label","Map navigation");
  wrap.appendChild(tabs);
  const gps=create("button","cockpit-gps","◎");gps.type="button";gps.setAttribute("aria-label","Center map on my location");gps.addEventListener("click",()=>locateMap());wrap.appendChild(gps);
- const dock=create("section","map-dock",'<form id="map-search-form" class="map-search-form"><span class="search-glass" aria-hidden="true">⌕</span><input id="map-place-query" list="map-place-suggestions" autocomplete="off" enterkeyhint="search" aria-label="Search city, place or destination" placeholder="Search a city, stop or destination"><datalist id="map-place-suggestions"></datalist><button type="submit" id="map-search-go" class="map-search-action">Find</button></form><div id="map-place-result" class="map-place-result" hidden><strong></strong><button type="button" id="map-route-here">Route here</button></div><div class="map-quick-row" aria-label="Map place filters"><button class="quick-category" data-category="stops" aria-pressed="false"><span>⛽</span> Truck Stops</button><button class="quick-category" data-category="parking" aria-pressed="false"><span>🅿</span> Truck Parking</button><button class="quick-category" data-category="fuel" aria-pressed="false"><span>◉</span> Fuel</button><button class="quick-category" data-category="rest" aria-pressed="false"><span>☕</span> Rest Areas</button><button class="quick-category" data-category="weigh" aria-pressed="false"><span>⚖</span> Weigh Stations</button><button class="quick-category" data-category="clear" aria-pressed="false"><span>×</span> Clear Pins</button></div><div class="map-poi-status" id="map-poi-status" role="status" aria-live="polite" hidden></div>');
+ const dock=create("section","map-dock",'<div id="map-route-banner" class="map-route-banner" hidden><span>Route ready</span><button type="button" id="map-route-compare">Compare routes</button></div><form id="map-search-form" class="map-search-form"><span class="search-glass" aria-hidden="true">⌕</span><input id="map-place-query" list="map-place-suggestions" autocomplete="off" enterkeyhint="search" aria-label="Search city, place or destination" placeholder="Search a city, stop or destination"><datalist id="map-place-suggestions"></datalist><button type="submit" id="map-search-go" class="map-search-action">Find</button></form><div id="map-place-result" class="map-place-result" hidden><strong></strong><button type="button" id="map-route-here">Route here</button></div><div class="map-quick-row" aria-label="Map place filters"><button class="quick-category" data-category="stops" aria-pressed="false"><span>⛽</span> Truck Stops</button><button class="quick-category" data-category="parking" aria-pressed="false"><span>🅿</span> Truck Parking</button><button class="quick-category" data-category="fuel" aria-pressed="false"><span>◉</span> Fuel</button><button class="quick-category" data-category="rest" aria-pressed="false"><span>☕</span> Rest Areas</button><button class="quick-category" data-category="weigh" aria-pressed="false"><span>⚖</span> Weigh Stations</button><button class="quick-category" data-category="clear" aria-pressed="false"><span>×</span> Clear Pins</button></div><div class="map-poi-status" id="map-poi-status" role="status" aria-live="polite" hidden></div>');
  wrap.appendChild(dock);
  const sheet=create("section","map-sheet",'<div class="map-sheet-head"><strong>Plan & check your trip</strong><button type="button" id="close-map-sheet" aria-label="Close trip planner">×</button></div><div id="map-sheet-content"></div>');
  sheet.id="map-sheet";sheet.hidden=true;sheet.setAttribute("aria-label","Trip planner and road intelligence");wrap.appendChild(sheet);
@@ -146,6 +146,7 @@ function buildCockpit(){
  byId("close-map-sheet").addEventListener("click",closeSheet);
  byId("map-search-form").addEventListener("submit",e=>{e.preventDefault();locatePlace(byId("map-place-query").value)});
  byId("map-route-here").addEventListener("click",routeToFound);
+ byId("map-route-compare").addEventListener("click",openSheet);
  dock.querySelectorAll(".quick-category").forEach(b=>b.addEventListener("click",()=>b.dataset.category==="clear"?clearPoi():b.getAttribute("aria-pressed")==="true"?clearPoi():showPoi(b.dataset.category)));
  let suggestionTimer=0;
  byId("map-place-query").addEventListener("input",()=>{
@@ -156,6 +157,7 @@ function buildCockpit(){
  });
  const observer=new MutationObserver(()=>{
   if(results.hidden)return;
+  const banner=byId("map-route-banner");banner.hidden=false;banner.querySelector("span").textContent="Route ready · "+byId("route-distance").textContent+" · "+byId("route-duration").textContent+" estimated";
   if(sheet.hidden){
    setStatus("Trip loaded. Tap Trips to compare routes, review alerts and view weather checkpoints.");
    return;
