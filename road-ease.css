@@ -1,0 +1,93 @@
+/* Driver-friendly, parked-use affordances. Complements map-first.css. */
+.road-ease-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:10px 0 4px}
+.road-ease-button{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:48px;border:1px solid #4d737e;border-radius:11px;background:#1c3139;color:#e9f5f6;font:700 12px var(--sans);padding:9px 6px;letter-spacing:0}
+.road-ease-button span{font-size:20px;line-height:1}
+.road-ease-button[aria-pressed="true"]{background:#155768;border-color:#8bb3bd}
+.road-ease-button:focus-visible,.road-panel-close:focus-visible,.road-summary button:focus-visible{outline:3px solid #e6f0a9;outline-offset:2px}
+.road-ease-message{margin:8px 3px 3px;color:#cbe1e6;font-size:12px;line-height:1.5}
+.road-ease-message[hidden],.road-summary[hidden]{display:none!important}
+.road-summary{margin:12px 12px 6px;padding:15px;border:1px solid #59727b;border-radius:13px;background:#18292f}
+.road-summary-row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.road-summary-row>div{min-width:0;flex:1}
+.road-summary strong,.road-summary small{display:block;line-height:1.5}
+.road-summary strong{font-size:16px}
+.road-summary small{font-size:13px;color:#b7d6d7;font-weight:700;margin-top:3px}
+.road-summary button{min-height:48px;border:1px solid #6d9dad;border-radius:10px;padding:9px 12px;background:#225568;color:#eaf6f8;font-size:12px;font-weight:750;flex:0 0 auto;max-width:48%}
+.road-summary>p{margin:11px 0 0;color:#d3e3e4;font-size:13px;line-height:1.55}
+.road-summary .road-safety-note{font-size:10px;color:#b2c6c9}
+.road-panel-close{flex:0 0 42px;height:42px;border-radius:10px;border:1px solid #647b80;background:#223439;color:white;font-size:25px;line-height:1}
+.map-overlay-stack .alerts-heading{position:relative;gap:5px}
+.map-overlay-stack .road-panel-close{margin-left:auto;align-self:start}
+body.map-first button,body.map-first select,body.map-first input{touch-action:manipulation}
+body.map-first input:focus-visible,body.map-first select:focus-visible{outline:2px solid #8abec9;outline-offset:3px}
+body.map-first .cockpit-tab{min-height:48px}
+body.map-first .quick-category{min-height:48px}
+body.map-first .map-search-form{min-height:52px;height:52px}
+body.map-first .map-search-action{height:42px}
+body.map-first .map-place-result button{min-height:45px}
+body.map-first .map-sheet-head button{width:48px;height:48px}
+body.map-first .cockpit-gps{width:52px;height:52px}
+body.map-first .state-map-toolbar .map-locate{min-height:48px}
+body.map-first .state-picker select{min-height:48px}
+body.map-first .route-choice{min-height:54px}
+body.map-first .tool-button{min-height:48px}
+body.map-first .map-dock{padding:12px}
+body.map-first .map-poi-status{font-size:12px}
+body.map-first .map-route-banner{min-height:49px}
+body.map-first .map-route-banner span{font-size:12px;line-height:1.5}
+body.map-first .map-route-banner button{min-height:44px}
+body.map-first .map-legend{font-size:10px}
+body.road-comfort .map-dock{background:#0e1d23f5;border-color:#688792}
+body.road-comfort .cockpit-tab{font-size:14px;padding:11px 15px;min-height:55px}
+body.road-comfort .quick-category{font-size:13px;min-height:54px;padding:0 15px}
+body.road-comfort .map-search-form{min-height:59px;height:59px}
+body.road-comfort .map-search-form input{font-size:16px}
+body.road-comfort .map-search-action{min-height:46px}
+body.road-comfort .road-ease-button{min-height:56px;font-size:13px}
+body.road-comfort .state-picker select{font-size:15px}
+body.road-comfort .state-map-toolbar{width:205px}
+body.road-comfort .cockpit-gps{height:58px;width:58px;font-size:27px}
+body.road-comfort .map-sheet .route-input{min-height:68px}
+body.road-comfort .map-sheet .route-input input{font-size:16px}
+body.road-comfort .map-sheet .primary-button{min-height:60px;font-size:13px}
+body.road-comfort .map-sheet .text-button{font-size:13px;min-height:44px}
+body.road-comfort .road-summary strong{font-size:18px}
+body.road-comfort .road-summary>p{font-size:15px}
+body.road-comfort .map-poi-status{font-size:13px}
+body.road-comfort .map-sheet .route-choice strong{font-size:12px}
+body.road-comfort .leaflet-control-zoom a{min-height:46px;min-width:46px;line-height:46px}
+body.road-comfort .map-overlay-stack>.map-overlay-panel{border-color:#70939d}
+body.road-comfort .map-overlay-stack .alerts-heading h3{font-size:17px}
+body.road-comfort .map-overlay-stack .road-event strong{font-size:12px}
+body.road-comfort .map-overlay-stack .road-event small{font-size:11px}
+@media(max-width:720px){
+ body.map-first .map-dock{padding:10px}
+ body.map-first .map-wrap .map-legend{height:35px}
+ body.map-first .map-search-form{height:52px;min-height:52px}
+ body.map-first .cockpit-tab{min-height:48px}
+ body.map-first .quick-category{min-height:46px}
+ .road-ease-actions{margin:9px 0 3px;gap:5px}
+ .road-ease-button{font-size:11px;gap:4px}
+ .road-ease-button span{font-size:17px}
+ body.map-first .map-map-count{bottom:240px}
+ body.map-first .map-overlay-stack{bottom:243px}
+ .road-summary-row{align-items:flex-start}
+ .road-summary{padding:12px;margin:10px 10px 5px}
+ .road-summary button{padding:8px}
+ body.road-comfort .map-dock{padding:10px}
+ body.road-comfort .cockpit-tab{font-size:13px;padding:10px 12px;min-height:51px}
+ body.road-comfort .quick-category{font-size:12px;min-height:51px}
+ body.road-comfort .road-ease-button{font-size:11px;min-height:55px}
+ body.road-comfort .state-map-toolbar{width:170px}
+ body.road-comfort .map-search-form{height:57px;min-height:57px}
+ body.road-comfort .cockpit-gps{width:54px;height:54px}
+}
+@media(max-width:380px){
+ .road-ease-button{font-size:10px}
+ .road-ease-button span{font-size:16px}
+ .road-summary-row{flex-wrap:wrap}
+ .road-summary button{max-width:none;width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ body.map-first *{scroll-behavior:auto!important}
+}
