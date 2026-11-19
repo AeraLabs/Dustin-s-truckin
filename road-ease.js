@@ -50,7 +50,7 @@ function checkCenter(){
  document.querySelector('.cockpit-tab[data-mode="trips"]')?.setAttribute("aria-pressed","false");
  notice("Checking map center for local weather and official alerts. Reported closures depend on available state 511 data.");
  // Uses existing weather, NWS and optional official 511 inspection. No location data is inferred from taps.
- inspectRoadSegment(c).catch(error=>notice("Could not load the check: "+(error.message||"data unavailable")));
+ (window.dustinRoadFocus?.inspect?.(c)||inspectRoadSegment(c)).catch(error=>notice("Could not load the check: "+(error.message||"data unavailable")));
 }
 function toggleComfort(){
  comfortable=!comfortable;
