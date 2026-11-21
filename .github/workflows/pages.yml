@@ -1,6 +1,10 @@
 name: Deploy to GitHub Pages
 on:
-  push:
+  # The repository also has the built-in branch-based Pages publisher.
+  # Run after it so its committed snapshots cannot overwrite refreshed data.
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
     branches: [main]
   schedule:
     - cron: "7,37 * * * *"
