@@ -8,53 +8,89 @@ function segmentDistance(point,a,b){
  return Math.hypot(x+t*dx,y+t*dy)*111195;
 }
 function lineDistance(point,coords){let best=Infinity;for(let i=1;i<coords.length;i++)best=Math.min(best,segmentDistance(point,coords[i-1],coords[i]));return best}
+// Project onto complete segments, not just OSM vertices.
+function closestPoint(point,geometry){
+ let best={distance:Infinity};const scale=Math.max(.01,Math.cos(point.lat*Math.PI/180));
+ for(let i=1;i<geometry.length;i++){
+  const a=geometry[i-1],b=geometry[i];
+  const x=(a[0]-point.lon)*scale,y=a[1]-point.lat,dx=(b[0]-a[0])*scale,dy=b[1]-a[1],length=dx*dx+dy*dy;
+  const t=length?Math.max(0,Math.min(1,-(x*dx+y*dy)/length)):0;
+  const distance=Math.hypot(x+t*dx,y+t*dy)*111195;
+  if(distance<best.distance)best={distance,point:{lat:a[1]+t*(b[1]-a[1]),lon:a[0]+t*(b[0]-a[0])}};
+ }
+ return best;
+}
+function snapRadius(lat,zoom){return Math.min(5000,Math.max(800,72*156543.03392*Math.cos(lat*Math.PI/180)/2**zoom))}
+function chooseRoad(point,ways,radius,direct=40){
+ const matches=ways.filter(w=>w.geometry?.length>1&&!/^(footway|path|steps|cycleway|bridleway|construction|proposed)$/.test(w.tags?.highway||''))
+ .map(way=>({way,...closestPoint(point,way.geometry.map(p=>[p.lon,p.lat]))})).filter(m=>m.distance<=radius).sort((a,b)=>a.distance-b.distance);
+ const hit=matches.find(m=>m.distance<=direct);
+ // Preserve deliberate local-road taps. Off-road taps prefer through highways, not ramps or tracks.
+ const match=hit||matches.find(m=>/^(motorway|trunk|primary)$/.test(m.way.tags?.highway||''));
+ return match?{...match,snapped:!hit}:null;
+}
 function rankRoutes(routes,point,speed=55){
  const baseline=routes[0];
  return routes.map((route,index)=>({index,miles:Math.round(route.distance/1609.34),minutes:Math.round(route.distance/1609.34/speed*60),extraMiles:Math.round((route.distance-(baseline?.distance||0))/1609.34),near:point?lineDistance(point,route.geometry?.coordinates||[])<800:null}))
  .sort((a,b)=>Number(a.near)-Number(b.near)||a.minutes-b.minutes);
 }
-if(typeof module==='object'&&module.exports){module.exports={segmentDistance,lineDistance,rankRoutes};return}
-let token=0,controller=null,selected=null,line=null,pin=null,eventsLayer=null,status='Checking nearby data',tone='loading',routesOpen=false;
+if(typeof module==='object'&&module.exports){module.exports={segmentDistance,lineDistance,rankRoutes,closestPoint,chooseRoad,snapRadius};return}
+let token=0,controller=null,selected=null,line=null,halo=null,pin=null,eventsLayer=null,status='Checking nearby data',tone='loading',routesOpen=false;
 const colors={loading:'#288ddd',ok:'#288ddd',caution:'#d59319',danger:'#d84639',cached:'#92734b',unavailable:'#788995'};
 const el=id=>document.getElementById(id);
 const coords=way=>(way.geometry||[]).map(p=>[p.lon,p.lat]);
-function clear(){token++;controller?.abort();for(const layer of [line,pin,eventsLayer])if(layer)state.map?.removeLayer(layer);line=pin=eventsLayer=null;selected=null;routesOpen=false;if(el('decision-routes'))el('decision-routes').hidden=true}
+function clear(){token++;controller?.abort();for(const layer of [line,halo,pin,eventsLayer])if(layer)state.map?.removeLayer(layer);line=halo=pin=eventsLayer=null;selected=null;routesOpen=false;if(el('decision-routes'))el('decision-routes').hidden=true}
 function paint(){
  if(!selected||!state.map||!window.L)return;
- const color=colors[tone]||colors.loading;
- if(line)line.setStyle({color,dashArray:['loading','cached','unavailable'].includes(tone)?'8 7':null});
- if(pin)pin.setTooltipContent(esc((selected.name||'Selected point')+' · '+status));
+ const color=["danger","caution"].includes(tone)?colors[tone]:colors.loading;
+ if(line)line.setStyle({color,dashArray:null});
+ if(pin)pin.setTooltipContent(esc((selected.name||'Selected point')+(selected.snapped?' · Snapped to highway':'')+' · '+status));
 }
 function draw(geometry,name){
  if(!selected||!state.map)return;
  if(line)state.map.removeLayer(line);
+ if(halo)state.map.removeLayer(halo);
+ halo=L.polyline(geometry.map(c=>[c[1],c[0]]),{color:'#fff',weight:15,opacity:.95,interactive:false}).addTo(state.map);
  line=L.polyline(geometry.map(c=>[c[1],c[0]]),{color:colors[tone],weight:9,opacity:.95,interactive:false}).addTo(state.map);
  selected.name=name;selected.geometry=geometry;
  if(el('focus-title'))el('focus-title').textContent=name;
  paint();
 }
-function nearest(point,ways){let match=null,distance=150;for(const way of ways){const c=coords(way),d=lineDistance(point,c);if(d<distance){distance=d;match=way}}return match}
 async function select(point,road){
- clear();const id=token;selected={...point,name:road.name||'Selected point'};tone='loading';status='Checking nearby data';
+ clear();const id=token;selected={...point,name:road.name||'Selected point'};tone='loading';status='Finding road';
  controller=new AbortController();
  pin=L.circleMarker([point.lat,point.lon],{radius:7,weight:3,color:'#fff',fillColor:'#288ddd',fillOpacity:1,interactive:false})
  .bindTooltip('',{permanent:true,direction:'top',offset:[0,-12],className:'decision-label'}).addTo(state.map);paint();
  routesOpen=false;renderRoutes();
- if(road.geometry?.length){draw(road.geometry,road.name||'Selected road');return}
- const cached=[...state.roadDataCache.values()].flat();const known=nearest(point,cached);
- if(known){road.name=known.tags?.name||known.tags?.ref||'Mapped road';draw(coords(known),road.name);return}
- if(state.map.getZoom()<10){status='Zoom closer to identify a road';paint();return}
- if(!navigator.onLine){status='Offline · road geometry unavailable';tone='cached';paint();return}
+ function apply(match){
+  const name=(match.way.tags?.ref||match.way.tags?.name||'Mapped road').replace(/;/g,' / ').replace(/\bI (?=\d)/g,'I-');
+  road.name=name;road.snapped=match.snapped;road.snapDistance=match.distance;
+  Object.assign(selected,match.point,{snapped:match.snapped});pin.setLatLng([match.point.lat,match.point.lon]);
+  status='Checking nearby data';draw(coords(match.way),name);renderRoutes();
+  if(match.snapped)state.map.panInside([match.point.lat,match.point.lon],{paddingTopLeft:[35,90],paddingBottomRight:[35,Math.max(440,state.map.getSize().y-210)]});
+  return {point:match.point,name,snapped:match.snapped,distance:match.distance};
+ }
+ if(road.geometry?.length>1){
+  const match=closestPoint(point,road.geometry);Object.assign(selected,match.point);pin.setLatLng([match.point.lat,match.point.lon]);
+  draw(road.geometry,road.name||'Selected road');return {point:match.point,name:road.name,snapped:false,distance:match.distance};
+ }
+ const zoom=state.map.getZoom(),radius=snapRadius(point.lat,zoom);
+ const known=chooseRoad(point,[...state.roadDataCache.values()].flat(),radius);
+ if(known&&(!known.snapped||!navigator.onLine))return apply(known);
+ if(zoom<8){selected.name='Zoom closer to identify a road';paint();return null}
+ if(!navigator.onLine){selected.name='Offline · road geometry unavailable';tone='cached';paint();return null}
  try{
-  const query='[out:json][timeout:6];way(around:180,'+point.lat+','+point.lon+')["highway"]["highway"!~"footway|path|steps|cycleway|bridleway"];out tags geom 35;';
-  const data=await requestJson('https://ovp.dresel.systems/api-na/interpreter?'+new URLSearchParams({data:query}),7500,{Accept:'application/json'},controller.signal);
-  if(id!==token)return;
-  const ways=(data.elements||[]).filter(w=>w.geometry?.length>1),way=nearest(point,ways);
-  if(!way){selected.name='Selected point · road not identified';paint();return}
+  const at=point.lat+','+point.lon;
+  const query='[out:json][timeout:8];(way(around:150,'+at+')["highway"]["highway"!~"footway|path|steps|cycleway|bridleway|construction|proposed"];way(around:'+Math.round(radius)+','+at+')["highway"~"^(motorway|trunk|primary)$"];);out tags geom;';
+  const data=await requestJson('https://ovp.dresel.systems/api-na/interpreter?'+new URLSearchParams({data:query}),10000,{Accept:'application/json'},controller.signal);
+  if(id!==token)return null;
+  if(data.remark||!Array.isArray(data.elements))throw Error('Incomplete road lookup');
+  const ways=data.elements.filter(w=>w.geometry?.length>1),match=chooseRoad(point,ways,radius);
   state.roadDataCache.set('tap:'+point.lat.toFixed(3)+','+point.lon.toFixed(3),ways);
   if(state.roadDataCache.size>12)state.roadDataCache.delete(state.roadDataCache.keys().next().value);
-  road.name=way.tags?.name||way.tags?.ref||'Mapped road';draw(coords(way),road.name);
- }catch{if(id===token){selected.name='Selected point · road lookup unavailable';paint()}}
+  if(!match){selected.name='No nearby highway found · selected point';paint();return null}
+  return apply(match);
+ }catch{if(id===token){if(known)return apply(known);selected.name='Selected point · road lookup unavailable';paint()}return null}
 }
 function update(label,type){if(!selected)return;status=label;tone=type;paint()}
 function incidents(events){

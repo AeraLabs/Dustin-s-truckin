@@ -67,14 +67,19 @@ async function inspect(latlng,road={}){
  inspectionController=new AbortController();
  const signal=inspectionController.signal;
  const point={lat:+latlng.lat,lon:+latlng.lng},token=++lastRequest;
- window.dustinDecision?.select(point,road);
+ const selection=window.dustinDecision?.select(point,road);
  if(state.map&&window.L){
   if(indicator)state.map.removeLayer(indicator);
   indicator=L.circleMarker([point.lat,point.lon],{radius:9,weight:3,color:"#fff",fillColor:"#117fe4",fillOpacity:1,interactive:false}).addTo(state.map);
  }
  $f("road-inspector").hidden=true;$f("state-overview").hidden=true;
+ setCard({name:road.name||"Finding nearby road…",subtitle:"Tap a road or near a highway",tag:"SELECTING ROAD",tagType:"loading",weather:"Matching your tap to the road…",alerts:"",events:"",details:"Off-road taps snap to a nearby highway when one is found."});
+ const match=await selection;
+ if(token!==lastRequest)return;
+ if(match){Object.assign(point,match.point);indicator?.setLatLng([point.lat,point.lon]);}
+ const selectionNote=match?.snapped?"Snapped to "+match.name+" · "+(match.distance/1609.34).toFixed(1)+" mi from tap. ":match?"Selected road segment. ":"Road not identified; showing the tapped point. ";
  const coarse=state.map?.getZoom()<10;
- const detail=coarse?"Zoom closer to select a specific road.":"This is nearby weather, not measured pavement conditions.";
+ const detail=selectionNote+(coarse&&!match?"Zoom closer to select a specific road.":"This is nearby weather, not measured pavement conditions.");
  const old=readCache()[cacheKey(point)];
  let title=road.name||"Selected map location";
  let region=state.stateFeatures?.find(f=>pointInState([point.lon,point.lat],f))?.properties?.name||"";
@@ -94,7 +99,7 @@ async function inspect(latlng,road={}){
  }
  function redraw(){
   if(token!==lastRequest)return;
-  setCard({name:road.name||title,subtitle:(road.name?"Mapped road · ":"Selected area · ")+(region||"state unknown")+" · "+point.lat.toFixed(3)+", "+point.lon.toFixed(3),
+  setCard({name:road.name||title,subtitle:(match?.snapped?"Snapped to highway · ":road.name?"Mapped road · ":"Selected area · ")+(region||"state unknown")+" · "+point.lat.toFixed(3)+", "+point.lon.toFixed(3),
    tag:nearbyClosure?"REPORTED CLOSURE NEARBY":urgentAlert?"SEVERE WEATHER ALERT":riskLabel,tagType:nearbyClosure||urgentAlert?"danger":riskType,weather:wxText,alerts:alertsText,events:eventsText,
    source:wxChecked?"WEATHER UPDATED "+formatTime(wxTime)+" · road surface unverified":"Weather refresh pending or unavailable",
    details:detail+" Check posted signs and official road reports; no data here confirms a route is truck-safe.",
@@ -102,7 +107,7 @@ async function inspect(latlng,road={}){
  }
  function persist(){
   if(!wxChecked)return;
-  storePoint(point,{name:title,temperature,condition,wind,gust,alerts:alertsText,events:eventsText,dotUrl:dot?.[1]||"",checkedAt:wxTime});
+  storePoint(point,{name:road.name||title,temperature,condition,wind,gust,alerts:alertsText,events:eventsText,dotUrl:dot?.[1]||"",checkedAt:wxTime});
  }
  // Three independent network lookups: render each as soon as it completes.
  const weatherPromise=requestJson("https://api.open-meteo.com/v1/forecast?"+new URLSearchParams({
@@ -249,7 +254,7 @@ function setup(){
   const element=map.querySelector(selector);if(element)drawer.appendChild(element);
  }
  const card=document.createElement("section");card.id="road-focus-card";card.className="road-focus-card";card.hidden=true;card.setAttribute("aria-live","polite");
- card.innerHTML='<div class="focus-card-head"><div><p class="focus-eyebrow">POINT CONDITIONS</p><h2 id="focus-title">Selected road</h2><p id="focus-subtitle"></p></div><button id="focus-close" type="button" aria-label="Close conditions">×</button></div><div id="focus-tag" class="focus-tag" data-type="loading">CHECKING</div><p id="focus-weather" class="focus-primary"></p><p id="focus-alerts" class="focus-secondary"></p><p id="focus-events" class="focus-secondary"></p><p id="focus-source" class="focus-age"></p><p id="focus-details" class="focus-disclaimer"></p><div class="focus-card-actions"><button id="focus-compare" type="button">Plan a trip</button><a id="focus-dot-link" target="_blank" rel="noopener noreferrer" hidden>Official 511 / DOT</a></div>';
+ card.innerHTML='<div class="focus-card-head"><div><p class="focus-eyebrow">POINT CONDITIONS</p><h2 id="focus-title">Selected road</h2><p id="focus-subtitle"></p></div><button id="focus-close" type="button" aria-label="Close conditions">×</button></div><div id="focus-tag" class="focus-tag" data-type="loading">CHECKING</div><p id="focus-weather" class="focus-primary"></p><details class="focus-report-details"><summary>Road reports &amp; details</summary><p id="focus-alerts" class="focus-secondary"></p><p id="focus-events" class="focus-secondary"></p><p id="focus-source" class="focus-age"></p><p id="focus-details" class="focus-disclaimer"></p></details><div class="focus-card-actions"><button id="focus-compare" type="button">Plan a trip</button><a id="focus-dot-link" target="_blank" rel="noopener noreferrer" hidden>Official 511 / DOT</a></div>';
  map.appendChild(card);
  $f("focus-plan").onclick=compare;
  $f("focus-close").onclick=closeCard;

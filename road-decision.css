@@ -7,3 +7,5 @@
 body.road-focus .road-focus-card,body.road-focus .road-tools-drawer{bottom:220px;max-height:calc(100% - 240px)}
 body.road-focus:has(.map-search-feedback:not([hidden])) .road-focus-card,body.road-focus:has(.map-search-feedback:not([hidden])) .road-tools-drawer,body.road-focus:has(#map-route-banner:not([hidden])) .road-focus-card,body.road-focus:has(#map-place-result:not([hidden])) .road-focus-card{bottom:285px;max-height:calc(100% - 305px)}
 @media(max-width:720px){body.road-focus .road-focus-card,body.road-focus .road-tools-drawer{bottom:192px;max-height:calc(100% - 215px)}.decision-routes{bottom:192px;max-height:calc(100% - 210px);left:9px;right:9px;width:auto}.driver-shortcuts button{font-size:12px}.driver-shortcuts{gap:5px}body.road-focus:has(.map-search-feedback:not([hidden])) .decision-routes{bottom:255px;max-height:calc(100% - 270px)}}
+
+.focus-report-details summary{min-height:44px;display:list-item;padding:12px 0;color:var(--text);font:650 14px var(--sans);cursor:pointer}.focus-report-details[open]{max-height:220px;overflow:auto}.focus-report-details summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
