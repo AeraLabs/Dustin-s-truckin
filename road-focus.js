@@ -4,6 +4,7 @@
 "use strict";
 const $f=id=>document.getElementById(id);
 const KEY="dustins-road-point-cache-v1";
+let inspectionController=null;
 let lastRequest=0,previewLine=null,indicator=null,altLine=null,previewIndex=null;
 const readCache=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch{return{}}};
 const formatTime=t=>{const d=new Date(t);return Number.isFinite(d.getTime())?d.toLocaleString([],{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"unknown date"};
@@ -41,7 +42,7 @@ function setCard({name,subtitle,tag,tagType,weather,alerts,events,source,details
  const compare=$f("focus-compare");
  compare.textContent=state.route&&choices.length>1?"Compare "+choices.length+" routes":state.route?"Review trip":"Plan a trip";
 }
-function closeCard(){lastRequest++;previewIndex=null;$f("road-focus-card").hidden=true;if(indicator&&state.map){state.map.removeLayer(indicator);indicator=null}if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null}}
+function closeCard(){inspectionController?.abort();lastRequest++;previewIndex=null;$f("road-focus-card").hidden=true;if(indicator&&state.map){state.map.removeLayer(indicator);indicator=null}if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null}}
 function cachedWeather(item){
  if(!item)return"";
  return [item.temperature!=null?item.temperature+"°F":null,item.condition,item.wind!=null?"Wind "+item.wind+" mph":null,item.gust!=null?"Gust "+item.gust+" mph":null].filter(Boolean).join(" · ");
@@ -61,6 +62,9 @@ async function inspect(latlng,road={}){
  previewIndex=null;
  if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null;}
  if(!latlng||!Number.isFinite(latlng.lat)||!Number.isFinite(latlng.lng))return;
+ inspectionController?.abort();
+ inspectionController=new AbortController();
+ const signal=inspectionController.signal;
  const point={lat:+latlng.lat,lon:+latlng.lng},token=++lastRequest;
  if(state.map&&window.L){
   if(indicator)state.map.removeLayer(indicator);
@@ -102,7 +106,7 @@ async function inspect(latlng,road={}){
   latitude:point.lat,longitude:point.lon,
   current:"temperature_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,visibility",
   wind_speed_unit:"kmh",timezone:"auto"
- }),8500).then(data=>{
+ }),8500,{Accept:"application/json"},signal).then(data=>{
   if(token!==lastRequest)return;
   const c=data.current;if(!c)throw Error("No current weather data");
   const r=assess(c);riskType=r.cls==="danger"?"danger":r.cls==="caution"?"caution":"ok";
@@ -118,7 +122,7 @@ async function inspect(latlng,road={}){
   wxText=old?cachedWeather(old):"Weather request failed";
   redraw();
  });
- const alertsPromise=requestJson("https://api.weather.gov/alerts/active?point="+point.lat+","+point.lon,8500,{Accept:"application/geo+json"}).then(data=>{
+ const alertsPromise=requestJson("https://api.weather.gov/alerts/active?point="+point.lat+","+point.lon,8500,{Accept:"application/geo+json"},signal).then(data=>{
   if(token!==lastRequest)return;
   if(!Array.isArray(data.features))throw Error("Invalid alert response");
   const list=data.features.map(f=>f.properties).filter(Boolean);
@@ -128,7 +132,7 @@ async function inspect(latlng,road={}){
   if(token!==lastRequest)return;
   alertsText="NWS: service unavailable";redraw();persist();
  });
- const placePromise=reverse(point.lat,point.lon).then(async place=>{
+ const placePromise=reverse(point.lat,point.lon,signal).then(async place=>{
   if(token!==lastRequest)return;
   if(!region)region=stateFor(place.region)||place.region||"";
   if(!road.name&&place.name&&place.name!=="Current location")title=place.name;
@@ -153,7 +157,7 @@ async function inspect(latlng,road={}){
  await Promise.allSettled([weatherPromise,alertsPromise,placePromise]);
 }
 function showSaved(trip){
- lastRequest++;previewIndex=null;
+ inspectionController?.abort();lastRequest++;previewIndex=null;
  toolsToggle(false);
  if($f("map-sheet"))$f("map-sheet").hidden=true;
  $f("map-dock")?.classList.remove("is-hidden");
@@ -183,7 +187,7 @@ function showSaved(trip){
   details:(snap.description||"No archived forecast description.")+" This route is not verified for commercial-truck restrictions. Refresh online before departure."});
 }
 function previewAlternative(index){
- lastRequest++;
+ inspectionController?.abort();lastRequest++;
  const routes=state.routeChoices||[],choice=routes[index];
  if(!choice?.geometry?.coordinates?.length||!state.map||!window.L)return;
  previewIndex=index;
@@ -205,6 +209,7 @@ function previewAlternative(index){
  $f("map-dock")?.classList.remove("is-hidden");
 }
 function compare(){
+ inspectionController?.abort();lastRequest++;
  if(previewIndex!==null){state.preferredRouteIndex=previewIndex;previewIndex=null;if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null}const form=$f("route-form");form?.requestSubmit();const button=document.querySelector('.cockpit-tab[data-mode="trips"]');button?.click();$f("road-focus-card").hidden=true;return}
  $f("road-focus-card").hidden=true;
  const button=document.querySelector('.cockpit-tab[data-mode="trips"]');
@@ -229,7 +234,7 @@ function setup(){
  const network=document.createElement("span");network.id="focus-network";network.className="focus-network";map.appendChild(network);setConnection();
  addEventListener("online",setConnection);addEventListener("offline",setConnection);
  const controls=document.createElement("div");controls.id="road-focus-actions";controls.className="road-focus-actions";
- controls.innerHTML='<button id="focus-saved" type="button">↶ Saved trip</button><button id="focus-tools" type="button" aria-expanded="false" aria-controls="road-tools-drawer">⚙ More</button>';
+ controls.innerHTML='<button id="focus-plan" type="button">Plan trip</button><button id="focus-saved" type="button">↶ Saved trip</button><button id="focus-tools" type="button" aria-expanded="false" aria-controls="road-tools-drawer">⚙ More</button>';
  dock.appendChild(controls);
  const drawer=document.createElement("section");drawer.id="road-tools-drawer";drawer.className="road-tools-drawer";drawer.hidden=true;
  drawer.innerHTML='<div class="road-drawer-heading"><strong>Map tools</strong><button type="button" id="focus-close-tools" aria-label="Close map tools">×</button></div><button type="button" id="focus-road-colors" class="focus-road-colors" aria-pressed="false">Weather-color road overlay: Off</button><p class="focus-overlay-note">Optional nearby road geometry. Colors are weather estimates, not DOT pavement reports. Loading may take longer.</p>';
@@ -240,6 +245,7 @@ function setup(){
  const card=document.createElement("section");card.id="road-focus-card";card.className="road-focus-card";card.hidden=true;card.setAttribute("aria-live","polite");
  card.innerHTML='<div class="focus-card-head"><div><p class="focus-eyebrow">POINT CONDITIONS</p><h2 id="focus-title">Selected road</h2><p id="focus-subtitle"></p></div><button id="focus-close" type="button" aria-label="Close conditions">×</button></div><div id="focus-tag" class="focus-tag" data-type="loading">CHECKING</div><p id="focus-weather" class="focus-primary"></p><p id="focus-alerts" class="focus-secondary"></p><p id="focus-events" class="focus-secondary"></p><p id="focus-source" class="focus-age"></p><p id="focus-details" class="focus-disclaimer"></p><div class="focus-card-actions"><button id="focus-compare" type="button">Plan a trip</button><a id="focus-dot-link" target="_blank" rel="noopener noreferrer" hidden>Official 511 / DOT</a></div>';
  map.appendChild(card);
+ $f("focus-plan").onclick=compare;
  $f("focus-close").onclick=closeCard;
  $f("focus-compare").onclick=compare;
  $f("focus-saved").onclick=()=>{

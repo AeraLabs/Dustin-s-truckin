@@ -70,3 +70,15 @@ Static HTTPS hosting such as GitHub Pages. Enable repository Pages with GitHub A
 - A saved trip panel always identifies itself as **CACHED — NOT LIVE** and warns that prior conditions and road events may be outdated. Cached snapshots never mean a road is clear. Cached data does **not** include a full 511 event set.
 - Tap checks retain a bounded local cache of recent weather points for offline review. Browser storage clearing removes those snapshots. The core PWA shell is cached, but an offline background map is not guaranteed: external map tiles and Leaflet libraries are subject to browser caching and provider policies. There is no map-area predownload.
 - The map and lookup interface is intended for pre-trip planning and safely parked checks, not operating the app while moving.
+
+### Appearance and startup improvements
+
+- Header Light/Dark button; Settings → Appearance also offers the device theme. The choice persists locally and applies before first paint.
+- Direct Plan trip, Saved trip, and More controls, readable phone layouts, and search status shown next to search.
+- Fixed the missing map-dock ID that prevented road-focus and road-ease controls from initializing.
+- Versioned app files and the bundled Leaflet 1.9.4 library load from the service-worker cache on repeat visits. Leaflet's original BSD license is in `vendor/leaflet/LICENSE`. Map tiles still require a connection unless the browser already has them cached; this is not an offline map download feature.
+- Restores the map view before requesting tiles, uses fewer offscreen tiles, shares concurrent JSON lookups, caches place searches for five minutes, and cancels superseded point weather/alert requests. Weather and alerts are never served from the place cache.
+
+Validation: `node --test tests/performance.test.cjs` covers shared requests, cancellation, cache freshness boundaries, failed requests, cached startup, and matching asset versions. Browser checks covered desktop and a 390 × 844 phone frame, light/dark switching and persistence, trip planner, settings, and point-condition feedback. NWS responded in the test environment; the forecast endpoint returned an upstream timeout, so successful live forecast retrieval was not verified there.
+
+When changing a cached application asset, update its URL version in `index.html` and `sw.js`, and bump the service-worker cache name. The next visit installs the new cache; an already-open tab may need reopening to use the new app files.

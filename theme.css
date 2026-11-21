@@ -1,0 +1,51 @@
+/* Shared ergonomics; light palette covers map, trip planner, dialogs and popups. */
+:root{--sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:ui-monospace,monospace}
+.theme-toggle{min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);font:650 14px var(--sans);white-space:nowrap}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #2999ff;outline-offset:3px}
+button:disabled{cursor:wait;opacity:.65}
+body.road-focus .map-dock,body.road-focus .map-sheet,body.road-focus .road-focus-card{backdrop-filter:none}
+body.road-focus .road-focus-actions button{flex:1;min-width:0;min-height:44px;font-size:14px;padding:7px 8px}
+body.road-focus #focus-plan{background:#0867d8;border-color:#4897ef;color:white}
+body.road-focus .map-search-form input,.field-copy input{font-size:16px}
+.map-search-feedback{font-size:14px;line-height:1.45;color:var(--text);margin:9px 2px 0;max-height:64px;overflow:auto}
+body.road-focus .map-dock:has(.map-search-feedback:not([hidden])) .map-search-feedback{padding-right:4px}
+body.road-focus:has(.map-search-feedback:not([hidden])) .road-focus-card,
+body.road-focus:has(.map-search-feedback:not([hidden])) .road-tools-drawer{bottom:230px;max-height:calc(100% - 250px)}
+body.road-focus .focus-secondary{font-size:14px;line-height:1.5}
+body.road-focus .focus-age,body.road-focus .focus-disclaimer{font-size:12px}
+body.road-focus .focus-card-head p:not(.focus-eyebrow){font-size:12px}
+body.road-focus .focus-card-actions button,body.road-focus .focus-card-actions a{font-size:14px}
+body.road-focus .road-focus-hint small{font-size:12px}
+body.road-focus .focus-network{font-size:11px}
+body.road-focus .map-sheet :is(.form-note,.muted,.source-note,.dialog-help,.safety-note){font-size:13px;line-height:1.5}
+body.road-focus .map-sheet :is(.field-copy small,.route-choice small,.checkpoint-place small,.alert-item small,.road-link small){font-size:12px}
+body.road-focus .map-sheet :is(.tool-button,.primary-button,.secondary-button,.route-choice strong,.checkpoint-place strong,.alert-item strong,.road-link strong){font-size:14px}
+.setting-row strong{font-size:15px}.setting-row small{font-size:13px;line-height:1.4}.setting-row select{min-height:44px;font-size:14px}
+html[data-theme="light"]{color-scheme:light;--bg:#f4f7fa;--panel:#fff;--panel2:#eaf0f5;--line:#bfccd6;--muted:#4c6170;--text:#142b3c;--accent:#126558;--accent2:#176b60;--amber:#865000;--red:#b32424}
+html[data-theme="light"] body{background:var(--bg);color:var(--text)}
+html[data-theme="light"] body.road-focus .truck-map-tiles{filter:none}
+html[data-theme="light"] body :is(.topbar,.panel,.map-dock,.map-sheet,.map-sheet-head,.road-focus-card,.road-tools-drawer,.road-focus-hint,.settings-dialog,.map-overlay-panel,.road-summary,.state-map-toolbar,.leaflet-popup-content-wrapper,.leaflet-popup-tip){background:#fff;color:var(--text);border-color:var(--line);box-shadow:0 6px 24px #18384d18}
+html[data-theme="light"] body :is(.route-input,.saved-trip,.checkpoint,.route-choice,.alert-item,.road-link,.road-event,.state-condition,.map-route-banner,.map-search-form,.road-summary,.risk-icon){background:#f0f5f9;color:var(--text);border-color:var(--line)}
+html[data-theme="light"] body :is(.icon-button,.cockpit-gps,.cockpit-tab,.quick-category,.road-ease-button,.focus-road-colors,.road-focus-actions button,.focus-card-actions a,.road-panel-close,.road-drawer-heading button,.map-sheet-head button,#focus-close,.tool-button,.secondary-button,.maps-button,.map-locate,.road-summary button){background:#edf3f8;color:#193e59;border-color:#a9bfce}
+html[data-theme="light"] body :is(.cockpit-tab,.quick-category,.road-ease-button,.focus-road-colors)[aria-pressed="true"],html[data-theme="light"] body .route-choice.active{background:#d5e9fb;color:#064e86;border-color:#397da9}
+html[data-theme="light"] body :is(input,select){color:#142b3c;background-color:transparent}
+html[data-theme="light"] body input::placeholder{color:#586b79}
+html[data-theme="light"] body :is(.focus-secondary,.focus-primary,.map-place-result,.road-summary>p,.risk-main p,.leaflet-popup-content){color:#203f54}
+html[data-theme="light"] body :is(small,.muted,.eyebrow,.form-note,.source-note,.dialog-help,.safety-note,.focus-age,.focus-disclaimer,.focus-eyebrow,.focus-card-head p,.focus-overlay-note,.road-ease-message,.map-poi-status,.text-button,.route-status,.checkpoint-distance,.checkpoint-weather,.condition,.weather-location,.metric-label,.risk-footer,.state-condition-meta,.road-summary small){color:#4c6170}
+html[data-theme="light"] body .focus-network{background:#fff;color:#315269;border-color:#a9bfce}
+html[data-theme="light"] body .focus-network[data-online="false"]{background:#fff0d8;color:#714400;border-color:#c99548}
+html[data-theme="light"] body .focus-tag{background:#e6f0f7;color:#284d66;border-color:#9fb9cb}
+html[data-theme="light"] body :is(.focus-tag[data-type="ok"],.risk-tag){background:#e0f3e8;color:#165332;border-color:#6b9b7e}
+html[data-theme="light"] body :is(.focus-tag[data-type="caution"],.focus-tag[data-type="cached"],.risk-tag.caution,.alert-severity){background:#fff0cf;color:#704100;border-color:#b99348}
+html[data-theme="light"] body :is(.focus-tag[data-type="danger"],.risk-tag.danger,.alert-danger .alert-severity){background:#ffe4e1;color:#97271f;border-color:#c47770}
+html[data-theme="light"] body .focus-tag[data-type="unavailable"]{background:#e7edf1;color:#425363;border-color:#9eafb9}
+html[data-theme="light"] body .leaflet-container{background:#e6eef1!important}
+html[data-theme="light"] body :is(.leaflet-control-attribution,.leaflet-control-zoom a){background:#fffffff2!important;color:#344e61!important;border-color:#b6c7d2!important}
+html[data-theme="light"] body :is(.leaflet-control-attribution a,.leaflet-popup-content a){color:#075b9c!important}
+html[data-theme="light"] body .brand-mark{background:#dbeaf2;border-color:#a2bacb;box-shadow:none}
+html[data-theme="light"] body .focus-secondary{border-color:#d2dde5}
+@media(max-width:720px){.theme-toggle{padding:0 9px;font-size:13px}.topbar-right{gap:3px}body.road-focus .road-focus-actions button{font-size:13px}body.road-focus .map-wrap{height:calc(100dvh - 58px - env(safe-area-inset-bottom))}body.road-focus .map-sheet{bottom:10px;max-height:calc(100% - 24px)}body.road-focus .map-sheet:has(.route-results:not([hidden])){max-height:calc(100% - 24px)}}
+@media(max-height:500px){body.road-focus .road-focus-hint,body.road-focus .focus-network{display:none}body.road-focus .road-focus-card{bottom:10px!important;right:10px;left:auto;width:48%;max-height:calc(100% - 20px)!important}body.road-focus .map-dock{right:auto;width:46%}body.road-focus .road-tools-drawer{bottom:10px!important;max-height:calc(100% - 20px)!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+html[data-theme="light"] body.road-focus #focus-plan{background:#0867d8;border-color:#4897ef;color:white}
+body.road-focus .leaflet-top.leaflet-left{top:125px}

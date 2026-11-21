@@ -13,7 +13,7 @@ const poiDefs={
 };
 function byId(id){return document.getElementById(id)}
 function create(tag,cls,html){const n=document.createElement(tag);n.className=cls;if(html)n.innerHTML=html;return n}
-function setStatus(message){const el=byId("map-poi-status");el.hidden=!message;el.textContent=message||""}
+function setStatus(message){const el=byId("map-poi-status");el.hidden=!message;el.textContent=message||"";const feedback=byId("map-search-feedback");if(feedback){feedback.hidden=!message;feedback.textContent=message||""}}
 function setPressed(category){
  document.querySelectorAll(".quick-category").forEach(el=>el.setAttribute("aria-pressed",String(el.dataset.category===category)));
 }
@@ -133,7 +133,9 @@ function buildCockpit(){
  wrap.appendChild(tabs);
  const gps=create("button","cockpit-gps","◎");gps.type="button";gps.setAttribute("aria-label","Center map on my location");gps.addEventListener("click",()=>locateMap());wrap.appendChild(gps);
  const dock=create("section","map-dock",'<div id="map-route-banner" class="map-route-banner" hidden><span>Route ready</span><button type="button" id="map-route-compare">Compare routes</button></div><form id="map-search-form" class="map-search-form"><span class="search-glass" aria-hidden="true">⌕</span><input id="map-place-query" list="map-place-suggestions" autocomplete="off" enterkeyhint="search" aria-label="Search city, place or destination" placeholder="Search a city, stop or destination"><datalist id="map-place-suggestions"></datalist><button type="submit" id="map-search-go" class="map-search-action">Find</button></form><div id="map-place-result" class="map-place-result" hidden><strong></strong><button type="button" id="map-route-here">Route here</button></div><div class="map-quick-row" aria-label="Map place filters"><button class="quick-category" data-category="stops" aria-pressed="false"><span>⛽</span> Truck Stops</button><button class="quick-category" data-category="parking" aria-pressed="false"><span>🅿</span> Truck Parking</button><button class="quick-category" data-category="fuel" aria-pressed="false"><span>◉</span> Fuel</button><button class="quick-category" data-category="rest" aria-pressed="false"><span>☕</span> Rest Areas</button><button class="quick-category" data-category="weigh" aria-pressed="false"><span>⚖</span> Weigh Stations</button><button class="quick-category" data-category="clear" aria-pressed="false"><span>×</span> Clear Pins</button></div><div class="map-poi-status" id="map-poi-status" role="status" aria-live="polite" hidden></div>');
+ dock.id="map-dock";
  wrap.appendChild(dock);
+ const feedback=create("p","map-search-feedback");feedback.id="map-search-feedback";feedback.hidden=true;feedback.setAttribute("role","status");dock.appendChild(feedback);
  const sheet=create("section","map-sheet",'<div class="map-sheet-head"><strong>Plan & check your trip</strong><button type="button" id="close-map-sheet" aria-label="Close trip planner">×</button></div><div id="map-sheet-content"></div>');
  sheet.id="map-sheet";sheet.hidden=true;sheet.setAttribute("aria-label","Trip planner and road intelligence");wrap.appendChild(sheet);
  byId("map-sheet-content").append(routeCard,results);
@@ -152,8 +154,8 @@ function buildCockpit(){
  byId("map-place-query").addEventListener("input",()=>{
   clearTimeout(suggestionTimer);
   const text=byId("map-place-query").value.trim();
-  if(text.length<3)return;
-  suggestionTimer=setTimeout(()=>searchPlaces(text).then(items=>{byId("map-place-suggestions").innerHTML=items.map(p=>'<option value="'+escapeHtml(p.name)+'"></option>').join("")}).catch(()=>{}),400);
+  if(text.length<3){byId("map-place-suggestions").replaceChildren();return;}
+  suggestionTimer=setTimeout(()=>searchPlaces(text).then(items=>{if(byId("map-place-query").value.trim()!==text)return;byId("map-place-suggestions").innerHTML=items.map(p=>'<option value="'+escapeHtml(p.name)+'"></option>').join("")}).catch(()=>{}),400);
  });
  const observer=new MutationObserver(()=>{
   if(results.hidden)return;
