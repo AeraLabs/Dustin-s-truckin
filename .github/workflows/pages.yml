@@ -1,16 +1,13 @@
 name: Deploy to GitHub Pages
 on:
-  # The repository also has the built-in branch-based Pages publisher.
-  # Run after it so its committed snapshots cannot overwrite refreshed data.
-  workflow_run:
-    workflows: ["pages build and deployment"]
-    types: [completed]
+  push:
     branches: [main]
   schedule:
     - cron: "7,37 * * * *"
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 concurrency:
@@ -25,6 +22,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Wait for the built-in branch publisher
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/wait-for-pages.py
       - name: Test application logic
         run: node --test tests/*.test.cjs
       - name: Refresh public work-zone snapshots
