@@ -26,6 +26,7 @@ function setConnection(){
 function setCard({name,subtitle,tag,tagType,weather,alerts,events,source,details,link}){
  const card=$f("road-focus-card");if(!card)return;
  card.hidden=false;
+ window.dustinDecision?.update(tag||"Checking",tagType||"loading");
  $f("focus-title").textContent=name||"Selected map point";
  $f("focus-subtitle").textContent=subtitle||"Weather near selected point";
  $f("focus-tag").textContent=tag||"CHECKING";
@@ -40,9 +41,9 @@ function setCard({name,subtitle,tag,tagType,weather,alerts,events,source,details
  if(link){l.href=link.url;l.textContent=link.text||"Official 511 / DOT";}
  const choices=state.routeChoices||[];
  const compare=$f("focus-compare");
- compare.textContent=state.route&&choices.length>1?"Compare "+choices.length+" routes":state.route?"Review trip":"Plan a trip";
+ compare.textContent=choices.length>1?"Compare "+choices.length+" routes":state.route?"Review trip":"Plan a trip";
 }
-function closeCard(){inspectionController?.abort();lastRequest++;previewIndex=null;$f("road-focus-card").hidden=true;if(indicator&&state.map){state.map.removeLayer(indicator);indicator=null}if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null}}
+function closeCard(){window.dustinDecision?.clear();inspectionController?.abort();lastRequest++;previewIndex=null;$f("road-focus-card").hidden=true;if(indicator&&state.map){state.map.removeLayer(indicator);indicator=null}if(altLine&&state.map){state.map.removeLayer(altLine);altLine=null}}
 function cachedWeather(item){
  if(!item)return"";
  return [item.temperature!=null?item.temperature+"°F":null,item.condition,item.wind!=null?"Wind "+item.wind+" mph":null,item.gust!=null?"Gust "+item.gust+" mph":null].filter(Boolean).join(" · ");
@@ -66,6 +67,7 @@ async function inspect(latlng,road={}){
  inspectionController=new AbortController();
  const signal=inspectionController.signal;
  const point={lat:+latlng.lat,lon:+latlng.lng},token=++lastRequest;
+ window.dustinDecision?.select(point,road);
  if(state.map&&window.L){
   if(indicator)state.map.removeLayer(indicator);
   indicator=L.circleMarker([point.lat,point.lon],{radius:9,weight:3,color:"#fff",fillColor:"#117fe4",fillOpacity:1,interactive:false}).addTo(state.map);
@@ -78,6 +80,7 @@ async function inspect(latlng,road={}){
  let region=state.stateFeatures?.find(f=>pointInState([point.lon,point.lat],f))?.properties?.name||"";
  let dot=roads[region];
  let wxText="Checking nearby weather…",alertsText="NWS alerts: checking…",eventsText="511 coverage: checking…";
+ let urgentAlert=false,nearbyClosure=false;
  let riskType="loading",riskLabel="CHECKING",wxChecked=false,wxTime="";
  let temperature=null,condition=null,wind=null,gust=null;
  if(old){cachedPoint(point,old);if(navigator.onLine)$f("focus-details").textContent="Showing a dated snapshot while checking for updated information. "+detail}
@@ -91,8 +94,8 @@ async function inspect(latlng,road={}){
  }
  function redraw(){
   if(token!==lastRequest)return;
-  setCard({name:title,subtitle:(road.name?"Mapped road · ":"Selected area · ")+(region||"state unknown")+" · "+point.lat.toFixed(3)+", "+point.lon.toFixed(3),
-   tag:riskLabel,tagType:riskType,weather:wxText,alerts:alertsText,events:eventsText,
+  setCard({name:road.name||title,subtitle:(road.name?"Mapped road · ":"Selected area · ")+(region||"state unknown")+" · "+point.lat.toFixed(3)+", "+point.lon.toFixed(3),
+   tag:nearbyClosure?"REPORTED CLOSURE NEARBY":urgentAlert?"SEVERE WEATHER ALERT":riskLabel,tagType:nearbyClosure||urgentAlert?"danger":riskType,weather:wxText,alerts:alertsText,events:eventsText,
    source:wxChecked?"WEATHER UPDATED "+formatTime(wxTime)+" · road surface unverified":"Weather refresh pending or unavailable",
    details:detail+" Check posted signs and official road reports; no data here confirms a route is truck-safe.",
    link:dot?{url:dot[1],text:dot[0]+" map"}:null});
@@ -126,6 +129,7 @@ async function inspect(latlng,road={}){
   if(token!==lastRequest)return;
   if(!Array.isArray(data.features))throw Error("Invalid alert response");
   const list=data.features.map(f=>f.properties).filter(Boolean);
+  urgentAlert=list.some(a=>["Severe","Extreme"].includes(a.severity));
   alertsText=list.length?"NWS: "+list.slice(0,3).map(a=>a.event||"Weather alert").join("; "):"NWS: 0 active alerts returned for this point";
   redraw();persist();
  }).catch(()=>{
@@ -137,15 +141,15 @@ async function inspect(latlng,road={}){
   if(!region)region=stateFor(place.region)||place.region||"";
   if(!road.name&&place.name&&place.name!=="Current location")title=place.name;
   dot=roads[region];redraw();persist();
-  const api=native511[region],key=api&&(state.incidentKeys[api.code]||(api.code==="ID"?state.incidentKey:""));
-  if(!api){eventsText=region?"511: official feed not integrated":"511: state not identified";redraw();persist();return}
-  if(!key){eventsText="511: official feed not connected for "+region;redraw();persist();return}
-  eventsText="511: checking nearby reported events…";redraw();
+  if(!region){eventsText="State not identified · open State road reports";redraw();return}
+  eventsText="Checking official road reports…";redraw();
   try{
    const data=await stateIncidents(region,point);
    if(token!==lastRequest)return;
    const events=data.events||[];
-   eventsText=events.length?"511: "+events.length+" event(s) within 5 miles — "+events.slice(0,2).map(e=>e.EventType||e.Description||"Road event").join("; "):"511: 0 nearby events returned; coverage may be incomplete";
+   nearbyClosure=events.some(e=>e.IsFullClosure===true||e.IsFullClosure==="true");
+   window.dustinDecision?.incidents(events);
+   eventsText=data.summary||(events.length?"511: "+events.length+" event(s) within 5 miles — "+events.slice(0,2).map(e=>e.EventType||e.Description||"Road event").join("; "):"511: 0 nearby events returned; coverage may be incomplete");
   }catch{
    if(token!==lastRequest)return;eventsText="511: official feed unavailable";
   }
@@ -157,6 +161,7 @@ async function inspect(latlng,road={}){
  await Promise.allSettled([weatherPromise,alertsPromise,placePromise]);
 }
 function showSaved(trip){
+ window.dustinDecision?.clear();
  inspectionController?.abort();lastRequest++;previewIndex=null;
  toolsToggle(false);
  if($f("map-sheet"))$f("map-sheet").hidden=true;
@@ -187,6 +192,7 @@ function showSaved(trip){
   details:(snap.description||"No archived forecast description.")+" This route is not verified for commercial-truck restrictions. Refresh online before departure."});
 }
 function previewAlternative(index){
+ window.dustinDecision?.clear();
  inspectionController?.abort();lastRequest++;
  const routes=state.routeChoices||[],choice=routes[index];
  if(!choice?.geometry?.coordinates?.length||!state.map||!window.L)return;

@@ -1,0 +1,252 @@
+{
+  "Alabama": {
+    "code": "AL",
+    "name": "ALDOT",
+    "url": "https://algotraffic.com/"
+  },
+  "Alaska": {
+    "code": "AK",
+    "name": "Alaska 511",
+    "url": "https://511.alaska.gov/"
+  },
+  "Arizona": {
+    "code": "AZ",
+    "name": "AZ511",
+    "url": "https://az511.gov/"
+  },
+  "Arkansas": {
+    "code": "AR",
+    "name": "IDrive Arkansas",
+    "url": "https://www.idrivearkansas.com/"
+  },
+  "California": {
+    "code": "CA",
+    "name": "Caltrans QuickMap",
+    "url": "https://quickmap.dot.ca.gov/"
+  },
+  "Colorado": {
+    "code": "CO",
+    "name": "COtrip",
+    "url": "https://www.cotrip.org/"
+  },
+  "Connecticut": {
+    "code": "CT",
+    "name": "CTroads",
+    "url": "https://ctroads.org/"
+  },
+  "Delaware": {
+    "code": "DE",
+    "name": "DelDOT",
+    "url": "https://deldot.gov/"
+  },
+  "Florida": {
+    "code": "FL",
+    "name": "FL511",
+    "url": "https://fl511.com/"
+  },
+  "Georgia": {
+    "code": "GA",
+    "name": "Georgia 511",
+    "url": "https://511ga.org/"
+  },
+  "Hawaii": {
+    "code": "HI",
+    "name": "Hawaii DOT roadwork",
+    "url": "https://hidot.hawaii.gov/highways/roadwork/"
+  },
+  "Idaho": {
+    "code": "ID",
+    "name": "Idaho 511",
+    "url": "https://511.idaho.gov/"
+  },
+  "Illinois": {
+    "code": "IL",
+    "name": "Getting Around Illinois",
+    "url": "https://www.gettingaroundillinois.com/"
+  },
+  "Indiana": {
+    "code": "IN",
+    "name": "INDOT TrafficWise",
+    "url": "https://511in.org/"
+  },
+  "Iowa": {
+    "code": "IA",
+    "name": "511 Iowa",
+    "url": "https://511ia.org/"
+  },
+  "Kansas": {
+    "code": "KS",
+    "name": "KanDrive",
+    "url": "https://www.kandrive.gov/"
+  },
+  "Kentucky": {
+    "code": "KY",
+    "name": "GoKY",
+    "url": "https://goky.ky.gov/"
+  },
+  "Louisiana": {
+    "code": "LA",
+    "name": "511 Louisiana",
+    "url": "https://www.511la.org/"
+  },
+  "Maine": {
+    "code": "ME",
+    "name": "New England 511",
+    "url": "https://newengland511.org/"
+  },
+  "Maryland": {
+    "code": "MD",
+    "name": "CHART",
+    "url": "https://chart.maryland.gov/"
+  },
+  "Massachusetts": {
+    "code": "MA",
+    "name": "Mass511",
+    "url": "https://mass511.com/"
+  },
+  "Michigan": {
+    "code": "MI",
+    "name": "Mi Drive",
+    "url": "https://mdotjboss.state.mi.us/MiDrive/"
+  },
+  "Minnesota": {
+    "code": "MN",
+    "name": "511 Minnesota",
+    "url": "https://511mn.org/"
+  },
+  "Mississippi": {
+    "code": "MS",
+    "name": "MDOT Traffic",
+    "url": "https://mdottraffic.com/"
+  },
+  "Missouri": {
+    "code": "MO",
+    "name": "MoDOT Traveler Map",
+    "url": "https://traveler.modot.org/map/"
+  },
+  "Montana": {
+    "code": "MT",
+    "name": "511 Montana",
+    "url": "https://511mt.net/"
+  },
+  "Nebraska": {
+    "code": "NE",
+    "name": "511 Nebraska",
+    "url": "https://www.511.nebraska.gov/"
+  },
+  "Nevada": {
+    "code": "NV",
+    "name": "NV Roads",
+    "url": "https://nvroads.com/"
+  },
+  "New Hampshire": {
+    "code": "NH",
+    "name": "New England 511",
+    "url": "https://newengland511.org/"
+  },
+  "New Jersey": {
+    "code": "NJ",
+    "name": "511NJ",
+    "url": "https://www.511nj.org/"
+  },
+  "New Mexico": {
+    "code": "NM",
+    "name": "NMRoads",
+    "url": "https://nmroads.com/"
+  },
+  "New York": {
+    "code": "NY",
+    "name": "511NY",
+    "url": "https://511ny.org/"
+  },
+  "North Carolina": {
+    "code": "NC",
+    "name": "DriveNC",
+    "url": "https://drivenc.gov/"
+  },
+  "North Dakota": {
+    "code": "ND",
+    "name": "ND Roads",
+    "url": "https://travel.dot.nd.gov/"
+  },
+  "Ohio": {
+    "code": "OH",
+    "name": "OHGO",
+    "url": "https://ohgo.com/"
+  },
+  "Oklahoma": {
+    "code": "OK",
+    "name": "Drive Oklahoma",
+    "url": "https://www.oktraffic.org/"
+  },
+  "Oregon": {
+    "code": "OR",
+    "name": "TripCheck",
+    "url": "https://tripcheck.com/"
+  },
+  "Pennsylvania": {
+    "code": "PA",
+    "name": "511PA",
+    "url": "https://www.511pa.com/"
+  },
+  "Rhode Island": {
+    "code": "RI",
+    "name": "RIDOT",
+    "url": "https://www.dot.ri.gov/travel/"
+  },
+  "South Carolina": {
+    "code": "SC",
+    "name": "511 SC",
+    "url": "https://www.511sc.org/"
+  },
+  "South Dakota": {
+    "code": "SD",
+    "name": "SD 511",
+    "url": "https://sd511.org/"
+  },
+  "Tennessee": {
+    "code": "TN",
+    "name": "SmartWay",
+    "url": "https://smartway.tn.gov/"
+  },
+  "Texas": {
+    "code": "TX",
+    "name": "DriveTexas",
+    "url": "https://drivetexas.org/"
+  },
+  "Utah": {
+    "code": "UT",
+    "name": "UDOT Traffic",
+    "url": "https://udottraffic.utah.gov/"
+  },
+  "Vermont": {
+    "code": "VT",
+    "name": "New England 511",
+    "url": "https://newengland511.org/"
+  },
+  "Virginia": {
+    "code": "VA",
+    "name": "511 Virginia",
+    "url": "https://511.vdot.virginia.gov/"
+  },
+  "Washington": {
+    "code": "WA",
+    "name": "WSDOT Travel",
+    "url": "https://wsdot.com/Travel/Real-time/Map/"
+  },
+  "West Virginia": {
+    "code": "WV",
+    "name": "WV 511",
+    "url": "https://wv511.org/"
+  },
+  "Wisconsin": {
+    "code": "WI",
+    "name": "511 Wisconsin",
+    "url": "https://511wi.gov/"
+  },
+  "Wyoming": {
+    "code": "WY",
+    "name": "WYDOT 511",
+    "url": "https://wyoroad.info/"
+  }
+}

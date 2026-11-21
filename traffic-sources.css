@@ -1,0 +1,9 @@
+.driver-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))}
+.driver-shortcuts [aria-pressed="true"]{background:#0867d8;color:white;border-color:#4897ef}
+body.road-focus .road-focus-actions button{font-size:12px;padding:6px 4px}
+.decision-label{width:max-content;min-width:160px;max-width:260px}
+body.road-focus .road-focus-card,body.road-focus .road-tools-drawer{bottom:285px;max-height:calc(100% - 305px)}
+body.road-focus:has(.map-search-feedback:not([hidden])) .road-focus-card,body.road-focus:has(.map-search-feedback:not([hidden])) .road-tools-drawer{bottom:350px;max-height:calc(100% - 370px)}
+#traffic-state{width:100%;min-height:48px;margin:10px 0;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:16px}
+#traffic-status,#traffic-count{font-size:15px;line-height:1.5}.traffic-official{display:block;background:#0867d8;color:white;border-radius:10px;padding:14px;text-align:center;text-decoration:none;font-weight:700}
+@media(max-width:720px){body.road-focus .road-focus-card,body.road-focus .road-tools-drawer,.decision-routes{bottom:245px;max-height:calc(100% - 268px)}body.road-focus:has(.map-search-feedback:not([hidden])) .road-focus-card,body.road-focus:has(.map-search-feedback:not([hidden])) .road-tools-drawer,body.road-focus:has(.map-search-feedback:not([hidden])) .decision-routes{bottom:310px;max-height:calc(100% - 330px)}.driver-shortcuts button{font-size:12px;min-height:44px}}

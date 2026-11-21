@@ -1,0 +1,483 @@
+[
+  {
+    "state": "oklahoma",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Oklahoma DOT",
+    "feedname": "odot",
+    "url": {
+      "url": "https://oktraffic.org/api/Geojsons/workzones?&access_token=feOPynfHRJ5sdx8tf3IN5yOsGz89TAUuzHsN3V0jo1Fg41LcpoLhIRltaTPmDngD"
+    }
+  },
+  {
+    "state": "colorado",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Colorado DOT",
+    "feedname": "cdot",
+    "url": {
+      "url": "https://data.cotrip.org/api/v1/wzdx?apiKey="
+    },
+    "apikeyurl": {
+      "url": "https://maps.cotrip.org/help/section/for-developers.html",
+      "description": ""
+    }
+  },
+  {
+    "state": "iowa",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Iowa DOT",
+    "feedname": "idot",
+    "url": {
+      "url": "https://iowa-atms.cloud-q-free.com/api/rest/dataprism/wzdx/wzdxfeed"
+    }
+  },
+  {
+    "state": "nps",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "National Park Service",
+    "feedname": "nps",
+    "url": {
+      "url": "https://developer.nps.gov/api/v1/roadevents?type=workzone&api_key="
+    },
+    "apikeyurl": {
+      "url": "https://www.nps.gov/subjects/developer/get-started.htm",
+      "description": ""
+    }
+  },
+  {
+    "state": "florida",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Florida DOT",
+    "feedname": "fldot",
+    "url": {
+      "url": "https://us-datacloud.one.network/fdot/feed.json?app_key=c4090b04-26de-c9ee-873b2bd9a38c"
+    }
+  },
+  {
+    "state": "minnesota",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Minnesota DOT",
+    "feedname": "mndot",
+    "url": {
+      "url": "https://mn.carsprogram.org/carsapi_v1/api/wzdx"
+    }
+  },
+  {
+    "state": "california",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Metropolitan Transportation Commission San Francisco",
+    "feedname": "mtc",
+    "url": {
+      "url": "https://api.511.org/traffic/wzdx?api_key=%3ckey%3e"
+    },
+    "apikeyurl": {
+      "url": "https://511.org/open-data/token",
+      "description": ""
+    }
+  },
+  {
+    "state": "maryland",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Maryland DOT",
+    "feedname": "mdot",
+    "url": {
+      "url": "https://filter.ritis.org/wzdx_v4.1/mdot.geojson"
+    }
+  },
+  {
+    "state": "arizona",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Maricopa County DOT",
+    "feedname": "mcdot",
+    "url": {
+      "url": "https://wzdxapi.aztech.org/construction"
+    }
+  },
+  {
+    "state": "wisconsin",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Wisconsin DOT",
+    "feedname": "wisdot",
+    "url": {
+      "url": "https://511wi.gov/api/wzdx"
+    }
+  },
+  {
+    "state": "missouri",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Missouri DOT",
+    "feedname": "modot",
+    "url": {
+      "url": "https://traveler.modot.org/timconfig/feed/desktop/mo_wzdx.json"
+    }
+  },
+  {
+    "state": "virginia",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Virginia DOT",
+    "feedname": "vdot",
+    "url": {
+      "url": "https://data.511-atis-ttrip-prod.iteriscloud.com/smarterRoads/workzone/workZoneJSON/current/workZone.json?token=INSERT-API-KEY-HERE"
+    },
+    "apikeyurl": {
+      "url": "https://smarterroads.vdot.virginia.gov/register",
+      "description": ""
+    }
+  },
+  {
+    "active": false,
+    "needapikey": false
+  },
+  {
+    "state": "hawaii",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Hawaii DOT",
+    "feedname": "hidot",
+    "url": {
+      "url": "https://ai.blyncsy.io/wzdx/hidot/feed"
+    }
+  },
+  {
+    "state": "new york",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "New York DOT",
+    "feedname": "nysdot",
+    "url": {
+      "url": "https://511ny.org/api/wzdx"
+    }
+  },
+  {
+    "state": "pennsylvania",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Pennsylvania Turnpike Commission",
+    "feedname": "ptc",
+    "url": {
+      "url": "https://atms.paturnpike.com/api/WZDxWorkZoneFeed?api_key=INSERT-API-KEY-HERE"
+    },
+    "apikeyurl": {
+      "url": "https://datahub.transportation.gov/api/views/69qe-yiui/files/de6330ba-7e11-4335-9a3f-caf24015dc1a?download=true&filename=WZDx_API_Key_Instructions.docx",
+      "description": ""
+    }
+  },
+  {
+    "state": "texas",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Texas DOT",
+    "feedname": "txdot_v4_2",
+    "url": {
+      "url": "https://api.drivetexas.org/api/conditions.wzdx.geojson?key="
+    },
+    "apikeyurl": {
+      "url": "https://api.drivetexas.org/",
+      "description": ""
+    }
+  },
+  {
+    "state": "washington",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Washington State DOT",
+    "feedname": "wsdot",
+    "url": {
+      "url": "https://wzdx.wsdot.wa.gov/api/v4/WorkZoneFeed"
+    }
+  },
+  {
+    "state": "missouri",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "St. Charles County",
+    "feedname": "stcharlesco_v4",
+    "url": {
+      "url": "https://scc.ridsi-dash.com:5000/wzdx.geojson"
+    }
+  },
+  {
+    "state": "new jersey",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "New Jersey Institute of Technology",
+    "feedname": "njdot",
+    "url": {
+      "url": "https://smartworkzones.njit.edu/nj/wzdx"
+    }
+  },
+  {
+    "state": "kentucky",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Kentucky Transportation Cabinet",
+    "feedname": "kytc",
+    "url": {
+      "url": "https://storage.googleapis.com/kytc-its-2020-openrecords/public/feeds/WZDx/kytc_wzdx_v4.1.geojson"
+    }
+  },
+  {
+    "state": "kansas",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Kansas DOT",
+    "feedname": "kansas",
+    "url": {
+      "url": "https://ks.carsprogram.org/carsapi_v1/api/wzdx"
+    }
+  },
+  {
+    "state": "texas",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "City of Austin",
+    "feedname": "austin",
+    "url": {
+      "url": "https://data.austintexas.gov/download/d9mm-cjw9"
+    }
+  },
+  {
+    "state": "illinois",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Illinois Tollway",
+    "feedname": "iltollway",
+    "url": {
+      "url": "https://tims2go.tollway.state.il.us/wzdx/v4.2?api_key=[Your-API-Key-Here]"
+    },
+    "apikeyurl": {
+      "url": "https://tims2go.tollway.state.il.us/",
+      "description": ""
+    }
+  },
+  {
+    "state": "ohio",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Ohio DOT",
+    "feedname": "ohio",
+    "url": {
+      "url": "https://publicapi.ohgo.com/api/work-zones/wzdx/4.2?api-key=INSERT-API-KEY-HERE"
+    },
+    "apikeyurl": {
+      "url": "https://publicapi.ohgo.com/accounts/registration",
+      "description": ""
+    }
+  },
+  {
+    "state": "delaware",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Delaware DOT",
+    "feedname": "dedot",
+    "url": {
+      "url": "https://wzdx.e-dot.com/del_dot_feed_wzdx_v4.1.geojson"
+    }
+  },
+  {
+    "state": "n/a",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Quebec City",
+    "feedname": "quebec",
+    "url": {
+      "url": "https://quebec.gewi.com/wzdx/pull"
+    }
+  },
+  {
+    "state": "louisiana",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Louisiana DOTD",
+    "feedname": "ladotd",
+    "url": {
+      "url": "https://wzdx.e-dot.com/la_dot_d_feed_wzdx_v4.1.geojson"
+    }
+  },
+  {
+    "state": "colorado",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Colorado DOT",
+    "feedname": "cdot_cwz",
+    "url": {
+      "url": "https://data.cotrip.org/api/v1/cwz?apiKey=[INSERT_API_KEY]",
+      "description": ""
+    },
+    "apikeyurl": {
+      "url": "https://manage-api.cotrip.org/subscriber/subscription",
+      "description": ""
+    }
+  },
+  {
+    "state": "idaho",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Idaho DOT",
+    "feedname": "iddot",
+    "url": {
+      "url": "https://511.idaho.gov/api/wzdx"
+    }
+  },
+  {
+    "state": "indiana",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Indiana DOT",
+    "feedname": "indot",
+    "url": {
+      "url": "https://in.carsprogram.org/carsapi_v1/api/wzdx"
+    }
+  },
+  {
+    "state": "n/a",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "CivicLink",
+    "feedname": "CivicLink_CrewCast",
+    "url": {
+      "url": "https://road-connect-community-bry7272.replit.app/api/wzdx/work-zones.geojson"
+    }
+  },
+  {
+    "state": "michigan",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Michigan DOT",
+    "feedname": "mdot_4",
+    "url": {
+      "url": "https://mdotridedata.state.mi.us//api/v1/organization/michigan_department_of_transportation/dataset/work_zone_information/query?limit=200&_format=json"
+    },
+    "apikeyurl": {
+      "url": "https://www.michigan.gov/mdot/travel/safety/efforts/its/its-data",
+      "description": ""
+    }
+  },
+  {
+    "state": "massachusetts",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Massachusetts DOT",
+    "feedname": "massdot__cwz",
+    "url": {
+      "url": "https://api.massdot-swzm.com/api/v1/cwz/work-zone-feed"
+    },
+    "apikeyurl": {
+      "url": "https://api-app.massdot-swzm.com/",
+      "description": ""
+    }
+  },
+  {
+    "state": "n/a",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "PurposeBuilt Systems, LLC",
+    "feedname": "pbs",
+    "url": {
+      "url": "https://feeds.purposebuilt.systems/cwz"
+    }
+  },
+  {
+    "state": "Illinois",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "IDOT",
+    "feedname": "idot_cwz",
+    "url": {
+      "url": "https://wzad-idot.illinois.gov/cwz/01.00?api_key=YOUR-CWZ-API-KEY"
+    },
+    "apikeyurl": {
+      "url": "https://wzad-idot.illinois.gov/cwz/api-key/",
+      "description": ""
+    }
+  },
+  {
+    "state": "New Hampshire, Vermont, Maine",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "NHDOT/VTAOT/MEDOT",
+    "feedname": "necdot",
+    "url": {
+      "url": "https://api.dx.ne-compass.com/wzdx-latest/"
+    }
+  },
+  {
+    "state": "north carolina",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "North Carolina DOT",
+    "feedname": "ncdot",
+    "url": {
+      "url": "https://drivenc.gov/api/wzdx"
+    },
+    "apikeyurl": {
+      "url": "https://www.drivenc.gov/developers/doc",
+      "description": ""
+    }
+  },
+  {
+    "state": "oregon",
+    "active": true,
+    "needapikey": true,
+    "issuingorganization": "Oregon DOT",
+    "feedname": "ordot",
+    "url": {
+      "url": "https://api.odot.state.or.us/WZDx/v4.0/Workzones"
+    },
+    "apikeyurl": {
+      "url": "https://apiportal.odot.state.or.us/",
+      "description": ""
+    }
+  },
+  {
+    "state": "mississippi",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Mississippi DOT",
+    "feedname": "msdot",
+    "url": {
+      "url": "https://api.mdottraffic.com/prod/v3/data/wzdx"
+    }
+  },
+  {
+    "state": "North Dakota",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "North Dakota DOT",
+    "feedname": "nddot",
+    "url": {
+      "url": "https://travelfiles.dot.nd.gov/geojson_nc/wzdx_geojson.json"
+    }
+  },
+  {
+    "state": "florida",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "Florida DOT",
+    "feedname": "fdot",
+    "url": {
+      "url": "https://api.depot.fdot.gov/wzdx-latest"
+    }
+  },
+  {
+    "state": "south dakota",
+    "active": true,
+    "needapikey": false,
+    "issuingorganization": "South Dakota DOT",
+    "feedname": "sddot",
+    "url": {
+      "url": "https://sd.cdn.iteris-atis.com/wzdx/sd_wzdx_v1.geojson"
+    }
+  }
+]
